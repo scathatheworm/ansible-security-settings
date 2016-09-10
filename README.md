@@ -5,6 +5,8 @@ Ansible Role for enforcing security settings related to enterprise compliance on
 
 This role configures several security settings across login, password management, ssh, pam, selinux configuration and other. It is designed for enterprise compliance definitions.
 
+This is NOT ready for implementation yet, don't use in any prod environment, lot of testing still needed.
+
 Configures:
 
 * pam tally and faillock modules for automated account lockout on failures
