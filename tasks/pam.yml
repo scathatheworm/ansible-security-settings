@@ -60,7 +60,7 @@
   - ansible_distribution_version == '11.0' or ansible_distribution_version == '11.1' or ansible_distribution_version == '11.2'
 
 - name: Insert pwhistory controls for SLES common-password
-  lineinfile: dest=/etc/pam.d/common-auth
+  lineinfile: dest=/etc/pam.d/common-password
               insertbefore='^auth.*required.*pam_env.*'
               line='password\trequired\tpam_pwhistory.so remember={{passhistory}} use_authtok'
               state=present
