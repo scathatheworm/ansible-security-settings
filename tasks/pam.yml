@@ -254,7 +254,7 @@
 
 - name: Remove cracklib definitions from SLES
   lineinfile: dest=/etc/pam.d/common-password
-              regex='^.*cracklib.*$'
+              regexp='^.*cracklib.*$'
               state=absent
   when:
   - ansible_distribution == 'SLES'
@@ -262,7 +262,7 @@
 
 - name: Remove cracklib definitions from RHEL
   lineinfile: dest=/etc/pam.d/system-auth
-              regex='^.*cracklib.*$'
+              regexp='^.*cracklib.*$'
               state=absent
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
@@ -270,7 +270,7 @@
 
 - name: Remove cracklib definitions from RHEL 7 password-auth
   lineinfile: dest=/etc/pam.d/password-auth
-              regex='^.*cracklib.*$'
+              regexp='^.*cracklib.*$'
               state=absent
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
