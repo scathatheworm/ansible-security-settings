@@ -1,0 +1,289 @@
+---
+- name: Remove tally references from SLES pam common-account
+  lineinfile: dest=/etc/pam.d/common-account
+              regexp='^.*pam_tally.*$'
+              state=absent
+  when:
+  - ansible_distribution == 'SLES'
+  - ansible_distribution_major_version == '12' or ansible_distribution_major_version == '11'
+
+- name: Remove tally references from SLES pam common-auth
+  lineinfile: dest=/etc/pam.d/common-auth
+              regexp='^.*pam_tally.*$'
+              state=absent
+  when:
+  - ansible_distribution == 'SLES'
+  - ansible_distribution_major_version == '12' or ansible_distribution_major_version == '11'
+
+- name: Remove pwhistory references from SLES common-password
+  lineinfile: dest=/etc/pam.d/common-password
+              regexp='^.*pam_pwhistory.*$'
+              state=absent
+  when:
+  - ansible_distribution == 'SLES'
+  - ansible_distribution_major_version == '12' or ansible_distribution_major_version == '11'
+
+- name: Insert tally2 controls for SLES common-account
+  lineinfile: dest=/etc/pam.d/common-account
+              insertbefore='^account.*required.*pam_unix2.*'
+              line='account\trequired\tpam_tally2.so'
+              state=present
+  when:
+  - ansible_distribution == 'SLES'
+  - ansible_distribution_major_version == '12' or ansible_distribution_version == '11.3' or ansible_distribution_version == '11.4'
+
+- name: Insert tally2 controls for SLES common-auth
+  lineinfile: dest=/etc/pam.d/common-auth
+              insertbefore='^auth.*required.*pam_env.*'
+              line='auth\trequired\tpam_tally2.so onerr=fail deny={{fail_deny}} unlock_time={{fail_unlock}}'
+              state=present
+  when:
+  - ansible_distribution == 'SLES'
+  - ansible_distribution_major_version == '12' or ansible_distribution_version == '11.3' or ansible_distribution_version == '11.4'
+
+- name: Insert tally controls for SLES common-account
+  lineinfile: dest=/etc/pam.d/common-account
+              insertbefore='^account.*required.*pam_unix2.*'
+              line='account\trequired\tpam_tally.so'
+              state=present
+  when:
+  - ansible_distribution == 'SLES'
+  - ansible_distribution_version == '11.0' or ansible_distribution_version == '11.1' or ansible_distribution_version == '11.2'
+
+- name: Insert tally controls for SLES common-auth
+  lineinfile: dest=/etc/pam.d/common-auth
+              insertbefore='^auth.*required.*pam_env.*'
+              line='auth\trequired\tpam_tally.so onerr=fail deny={{fail_deny}} unlock_time={{fail_unlock}} per_user'
+              state=present
+  when:
+  - ansible_distribution == 'SLES'
+  - ansible_distribution_version == '11.0' or ansible_distribution_version == '11.1' or ansible_distribution_version == '11.2'
+
+- name: Insert pwhistory controls for SLES common-password
+  lineinfile: dest=/etc/pam.d/common-auth
+              insertbefore='^auth.*required.*pam_env.*'
+              line='password\trequired\tpam_pwhistory.so remember={{passhistory}} use_authtok'
+              state=present
+  when:
+  - ansible_distribution == 'SLES'
+  - ansible_distribution_major_version == '12' or ansible_distribution_major_version == '11'
+
+- name: Remove faillock references from RedHat 7 password-auth
+  lineinfile: dest=/etc/pam.d/password-auth
+              regexp='^.*pam_faillock.*$'
+              state=absent
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '7'
+
+- name: Remove faillock references from RedHat 7 system-auth
+  lineinfile: dest=/etc/pam.d/system-auth
+              regexp='^.*pam_faillock.*$'
+              state=absent
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '7'
+
+- name: Remove tally references from RedHat 6 and 7 password-auth
+  lineinfile: dest=/etc/pam.d/password-auth
+              regexp='^.*pam_tally.*$'
+              state=absent
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '6' or ansible_distribution_major_version == '7'
+
+- name: Remove tally references from RedHat system-auth
+  lineinfile: dest=/etc/pam.d/system-auth
+              regexp='^.*pam_tally.*$'
+              state=absent
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6' or ansible_distribution_major_version == '7'
+
+- name: Insert tally controls for Redhat 5 system-auth
+  lineinfile: dest=/etc/pam.d/system-auth
+              insertafter='^auth.*required.*pam_env.*$'
+              line='auth\trequired\tpam_tally.so per_user deny={{fail_deny}} onerr=fail unlock_time={{fail_unlock}}'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '5'
+
+- name: Insert tally controls for Redhat 5 system-auth account
+  lineinfile: dest=/etc/pam.d/system-auth
+              insertafter='^account.*required.*pam_unix.*$'
+              line='auth\trequired\tpam_tally.so'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '5'
+
+
+- name: Insert tally2 controls for RedHat 6 password-auth
+  lineinfile: dest=/etc/pam.d/password-auth
+              insertafter='^auth.*required.*pam_env.*$'
+              line='auth\trequired\tpam_tally2.so deny={{fail_deny}} onerr=fail unlock_time={{fail_unlock}}'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '6'
+
+- name: Insert tally2 controls for RedHat 6 password-auth account
+  lineinfile: dest=/etc/pam.d/password-auth
+              insertafter='^account.*required.*pam_unix.*$'
+              line='account\trequired\tpam_tally2.so'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '6'
+
+- name: Insert tally2 controls for RedHat 6 system-auth
+  lineinfile: dest=/etc/pam.d/system-auth
+              insertafter='^auth.*required.*pam_env.*$'
+              line='auth\trequired\tpam_tally2.so deny={{fail_deny}} onerr=fail unlock_time={{fail_unlock}}'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '6' 
+
+- name: Insert tally2 controls for RedHat 6 system-auth account
+  lineinfile: dest=/etc/pam.d/system-auth
+              insertafter='^account.*required.*pam_unix.*$'
+              line='account\trequired\tpam_tally2.so'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '6'
+
+- name: Insert faillock controls for RedHat 7 password-auth
+  lineinfile: dest=/etc/pam.d/password-auth
+              insertafter='^auth.*required.*pam_env.*$'
+              line='auth\trequired\tpam_faillock.so preauth deny={{fail_deny}} unlock_time={{fail_unlock}}'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '7'
+
+- name: Insert failock controls for RedHat 7 password-auth account
+  lineinfile: dest=/etc/pam.d/password-auth
+              insertbefore='^account.*required.*pam_unix.*$'
+              line='account\trequired\tpam_faillock.so'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '7'
+
+- name: Insert faillock controls for RedHat 7 system-auth
+  lineinfile: dest=/etc/pam.d/system-auth
+              insertafter='^auth.*required.*pam_env.*$'
+              line='auth\trequired\tpam_faillock.so preauth deny={{fail_deny}} unlock_time={{fail_unlock}}'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '7'
+
+- name: Insert faillock controls for RedHat 7 system-auth account
+  lineinfile: dest=/etc/pam.d/system-auth
+              insertbefore='^account.*required.*pam_unix.*$'
+              line='account\trequired\tpam_faillock.so'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '7'
+
+- name: Insert faillock authfail controls for RedHat 7 password-auth
+  lineinfile: dest=/etc/pam.d/password-auth
+              insertafter='^auth.*sufficient.*pam_unix.*$'
+              line='auth\t[default=die]\tpam_faillock.so authfail audit deny={{fail_deny}} unlock_time={{fail_unlock}}'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '7'
+
+- name: Insert faillock authfail controls for RedHat 7 system-auth
+  lineinfile: dest=/etc/pam.d/system-auth
+              insertafter='^auth.*sufficient.*pam_unix.*$'
+              line='auth\t[default=die]\tpam_faillock.so authfail audit deny={{fail_deny}} unlock_time={{fail_unlock}}'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '7'
+
+- name: Remove pwhistory module if present for RedHat
+  lineinfile: dest=/etc/pam.d/system-auth
+              regexp='.*pwhistory.*'
+              state=absent
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6' or ansible_distribution_major_version == '7'
+
+- name: Remove password history entry in system-auth for RedHat
+  lineinfile: dest=/etc/pam.d/system-auth
+              regexp='^password.*sufficient.*pam_unix\.so.*$'
+              state=absent
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6' or ansible_distribution_major_version == '7'
+
+- name: Add unix.so based history for RedHat 5
+  lineinfile: dest=/etc/pam.d/system-auth
+              insertbefore='^password.*required.*pam_deny.*$'
+              line='password\tsufficient\tpam_unix.so md5 shadow remember={{passhistory}} nullok try_first_pass use_authtok'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '5'
+
+- name: Add unix.so based history for RedHat 6
+  lineinfile: dest=/etc/pam.d/system-auth
+              insertbefore='^password.*required.*pam_deny.*$'
+              line='password\tsufficient\tpam_unix.so sha512 shadow remember={{passhistory}} nullok try_first_pass use_authtok'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '6'
+
+- name: Add pwhistory based history for RedHat 7
+  lineinfile: dest=/etc/pam.d/system-auth
+              insertbefore='^password.*required.*pam_deny.*$'
+              line='password\trequired\tpam_pwhistory.so remember={{passhistory}} use_authtok\npassword\tsufficient\tpam_unix.so sha512 shadow nullok try_first_pass use_authtok'
+              state=present
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '7'
+
+- name: Remove cracklib definitions from SLES 11
+  lineinfile: dest=/etc/pam.d/common-password
+              regex='^.*cracklib.*$'
+              state=absent
+  when:
+  - ansible_distribution == 'SLES'
+  - ansible_distribution_major_version == '11'
+
+- name: Remove cracklib definitions from RHEL 5/6
+  lineinfile: dest=/etc/pam.d/system-auth
+              regex='^.*cracklib.*$'
+              state=absent
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6'
+
+- name: Add cracklib setup for SLES 11
+  lineinfile: dest=/etc/pam.d/common-password
+              insertbefore='^password.*required.*pam_pwhistory.*$'
+              line='password\trequisite\tpam_cracklib.so retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}} maxrepeat={{pwquality_maxrepeat}}'
+  when:
+  - ansible_distribution == 'SLES'
+  - ansible_distribution_major_version == '11'
+
+- name: Add cracklib setup for RHEL 5/6
+  lineinfile: dest=/etc/pam.d/system-auth
+              insertbefore='^password.*sufficient.*pam_unix.*$'
+              line='password\trequisite\tpam_cracklib.so retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}} maxrepeat={{pwquality_maxrepeat}}'
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6'
+
+- name: create pwquality.conf for SLES12 and RHEL7
+  template: src='pwquality.conf.j2' dest='/etc/security/pwquality.conf' owner=root group=root mode=0644
+  when: ( ansible_distribution == 'RedHat' and ansible_distribution_major_version == '7' ) or ( ansible_distribution == 'Oracle Linux' and ansible_distribution_major_version == '7' ) or ( ansible_distribution == 'SLES' and ansible_distribution_major_version == '12' )

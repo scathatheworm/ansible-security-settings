@@ -1,0 +1,9 @@
+---
+- name: Set pass max days
+  lineinfile: dest=/etc/login.defs state=present regexp='^PASS_MAX_DAYS.*$' line='PASS_MAX_DAYS\t{{os_auth_pw_max_age}}' backrefs=yes
+
+- name: Set pass min days
+  lineinfile: dest=/etc/login.defs state=present regexp='^PASS_MIN_DAYS.*$' line='PASS_MIN_DAYS\t{{os_auth_pw_min_age}}' backrefs=yes
+
+- name: Set pass min length
+  lineinfile: dest=/etc/login.defs state=present regexp='^PASS_MIN_LEN.*$' line='PASS_MIN_LEN\t{{pwquality_minlen}}' backrefs=yes
