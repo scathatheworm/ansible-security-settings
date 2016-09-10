@@ -252,29 +252,53 @@
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
   - ansible_distribution_major_version == '7'
 
-- name: Remove cracklib definitions from SLES 11
+- name: Remove cracklib definitions from SLES
   lineinfile: dest=/etc/pam.d/common-password
               regex='^.*cracklib.*$'
               state=absent
   when:
   - ansible_distribution == 'SLES'
-  - ansible_distribution_major_version == '11'
+  - ansible_distribution_major_version == '11' or ansible_distribution_major_version == '12'
 
-- name: Remove cracklib definitions from RHEL 5/6
+- name: Remove cracklib definitions from RHEL
   lineinfile: dest=/etc/pam.d/system-auth
               regex='^.*cracklib.*$'
               state=absent
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
-  - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6'
+  - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6' or ansible_distribution_major_version == '7'
 
-- name: Add cracklib setup for SLES 11
+- name: Remove cracklib definitions from RHEL 7 password-auth
+  lineinfile: dest=/etc/pam.d/password-auth
+              regex='^.*cracklib.*$'
+              state=absent
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '7'
+
+- name: Add pwquality module for RHEL 7 system-auth
+  lineinfile: dest=/etc/pam.d/system-auth
+              insertbefore='^password.*required.*pam_pwhistory.*$'
+              line='password\trequisite\tpam_pwquality.so try_first_pass local_users_only retry=3 authtok_type='
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '7'
+
+- name: Add pwquality module for RHEL 7 password-auth
+  lineinfile: dest=/etc/pam.d/pasword-auth
+              insertbefore='^password.*sufficient.*pam_unix.*$'
+              line='password\trequisite\tpam_pwquality.so try_first_pass local_users_only retry=3 authtok_type='
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '7'
+
+- name: Add cracklib setup for SLES
   lineinfile: dest=/etc/pam.d/common-password
               insertbefore='^password.*required.*pam_pwhistory.*$'
               line='password\trequisite\tpam_cracklib.so retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}} maxrepeat={{pwquality_maxrepeat}}'
   when:
   - ansible_distribution == 'SLES'
-  - ansible_distribution_major_version == '11'
+  - ansible_distribution_major_version == '11' or ansible_distribution_major_version == '12'
 
 - name: Add cracklib setup for RHEL 5/6
   lineinfile: dest=/etc/pam.d/system-auth
@@ -287,3 +311,5 @@
 - name: create pwquality.conf for SLES12 and RHEL7
   template: src='pwquality.conf.j2' dest='/etc/security/pwquality.conf' owner=root group=root mode=0644
   when: ( ansible_distribution == 'RedHat' and ansible_distribution_major_version == '7' ) or ( ansible_distribution == 'Oracle Linux' and ansible_distribution_major_version == '7' ) or ( ansible_distribution == 'SLES' and ansible_distribution_major_version == '12' )
+
+- name: 
