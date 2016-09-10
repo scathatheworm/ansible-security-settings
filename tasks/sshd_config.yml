@@ -64,7 +64,3 @@
               mode=600
   notify: restart sshd
   when: setloginbanner == 'yes'
-
-handlers:
-  - name: restart sshd
-    service: name=sshd state=restarted
