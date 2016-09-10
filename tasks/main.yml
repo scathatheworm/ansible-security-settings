@@ -1,0 +1,9 @@
+---
+- include: login_defs.yml
+  tags: login_defs
+
+- include: pam.yml
+  tags: pam
+
+- include: sshd_config.yml
+  tags: sshd_config
