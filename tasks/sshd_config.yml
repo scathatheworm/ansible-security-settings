@@ -37,7 +37,7 @@
   when: sshextraport != 0
 
 - name: Create login banner
-  copy: src=files/login_banner dest=/etc/login_banner owner=root group=root mode=644
+  copy: src=login_banner dest=/etc/login_banner owner=root group=root mode=644
   when: setloginbanner == 'yes'
 
 - name: Remove unwanted login banner references
