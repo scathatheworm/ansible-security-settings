@@ -311,5 +311,3 @@
 - name: create pwquality.conf for SLES12 and RHEL7
   template: src='pwquality.conf.j2' dest='/etc/security/pwquality.conf' owner=root group=root mode=0644
   when: ( ansible_distribution == 'RedHat' and ansible_distribution_major_version == '7' ) or ( ansible_distribution == 'Oracle Linux' and ansible_distribution_major_version == '7' ) or ( ansible_distribution == 'SLES' and ansible_distribution_major_version == '12' )
-
-- name: 
