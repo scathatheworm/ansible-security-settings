@@ -61,7 +61,7 @@
 
 - name: Insert pwhistory controls for SLES common-password
   lineinfile: dest=/etc/pam.d/common-password
-              insertbefore='^auth.*required.*pam_env.*'
+              insertbefore='^password.*requisite.*pam_pwcheck.*'
               line='password\trequired\tpam_pwhistory.so remember={{passhistory}} use_authtok'
               state=present
   when:
