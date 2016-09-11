@@ -2,7 +2,7 @@
 galaxy_info:
   author: "David Ponessa"
   description: 'Ansible Role for enforcing security settings related to enterprise compliance on enterprise grade OS.'
-  license: GNU GPL 3.0
+  license: GNU GPL 2.0
   min_ansible_version: '2.1'
   platforms:
     - name: EL
@@ -12,6 +12,7 @@ galaxy_info:
         - 7
     - name: SLES
       versions:
+        - 10
         - 11
         - 12
   galaxy_tags:
