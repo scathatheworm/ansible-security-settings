@@ -256,3 +256,16 @@
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
   - ansible_distribution_major_version == '7'
+
+- name: configure password complexity for RHEL 5/6
+  lineinfile: dest=/etc/pam.d/system-auth
+              regexp='^password.*requisite.*pam_cracklib.*'
+              insertbefore='^password.*sufficient.*pam_unix'
+              line='password\trequisite\tpam_cracklib.so try_first_pass retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}} maxrepeat={{pwquality_maxrepeat}}'
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6'
+
+- name: create pwquality.conf password complexity configuration for SLES12 and RHEL7
+  template: src='pwquality.conf.j2' dest='/etc/security/pwquality.conf' owner=root group=root mode=0644
+  when: ( ansible_distribution == 'RedHat' and ansible_distribution_major_version == '7' ) or ( ansible_distribution == 'Oracle Linux' and ansible_distribution_major_version == '7' ) or ( ansible_distribution == 'SLES' and ansible_distribution_major_version == '12' )
