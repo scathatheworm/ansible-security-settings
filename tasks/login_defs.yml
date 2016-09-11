@@ -7,3 +7,6 @@
 
 - name: Set pass min length
   lineinfile: dest=/etc/login.defs state=present regexp='^PASS_MIN_LEN.*$' line='PASS_MIN_LEN\t{{pwquality_minlen}}' backrefs=yes
+
+- name: Set pass warn days
+  lineinfile: dest=/etc/login.defs state=present regexp='^PASS_WARN_AGE.*$' line='PASS_WARN_AGE\t{{os_auth_pw_warn_age}}' backrefs=yes

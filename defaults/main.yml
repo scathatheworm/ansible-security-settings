@@ -1,5 +1,6 @@
 os_auth_pw_max_age: 60
 os_auth_pw_min_age: 10
+os_auth_pw_warn_age: 7
 fail_deny: 5
 fail_unlock: 300
 pwquality_minlen: 8
