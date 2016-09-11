@@ -20,6 +20,7 @@ Variables:
 | -------------- | ------------- | -----------------------------------|
 | `os_auth_pw_max_age` | 60 | Max days a password is valid before requiring a change |
 | `os_auth_pw_min_age` | 10 | Min days of age a password must have before it can be changed |
+| `os_auth_pw_min_age` | 7 | Days before password expires that account will be warned |
 | `fail_deny` | 5 | Amount of times failed password can be tried before locking the account |
 | `fail_unlock` | 300 | Seconds that must pass before account is unlocked after failed logins |
 | `pwquality_minlen` | 8 | Minimum password length in characters |
