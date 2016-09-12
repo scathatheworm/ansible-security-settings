@@ -1,0 +1,8 @@
+---
+- name: Set selinux to {{selinux_state}}
+  lineinfile: regexp='^SELINUX=.*'
+              line='SELINUX={{selinux_state}}'
+              dest=/etc/selinux/config
+              state=present
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'
+  ignore_errors: yes

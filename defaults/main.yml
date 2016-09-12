@@ -14,3 +14,6 @@ sshrootlogin: 'no'
 sshmainport: 22
 sshextraport: 32
 setloginbanner: 'yes'
+selinux_state: permissive
+firewall_state: stopped
+firewall_enable: 'no'
