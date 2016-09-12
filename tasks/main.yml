@@ -7,3 +7,9 @@
 
 - include: sshd_config.yml
   tags: sshd_config
+
+- include: selinux.yml
+  tags: selinux
+
+- include: firewall.yml
+  tags: firewall
