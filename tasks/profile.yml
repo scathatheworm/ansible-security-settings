@@ -16,6 +16,6 @@
 - name: Set export TMOUT
   lineinfile: dest=/etc/profile
               regexp='^export TMOUT'
-              insertafter='readonly TMOUT
+              insertafter='readonly TMOUT'
               line='export TMOUT'
   when: shell_timeout != '0'
