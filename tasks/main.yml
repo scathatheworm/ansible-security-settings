@@ -13,3 +13,6 @@
 
 - include: firewall.yml
   tags: firewall
+
+- include: profile.yml
+  tags: profile
