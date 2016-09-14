@@ -1,7 +1,11 @@
 ---
+- name: Check if selinux is there
+  stat: path=/etc/selinux/config
+  register: selinux_config
+
 - name: Set selinux desired state
   lineinfile: regexp='^SELINUX=.*'
               line='SELINUX={{selinux_state}}'
               dest=/etc/selinux/config
               state=present
-  ignore_errors: yes
+  when: selinux_config.stat.exists

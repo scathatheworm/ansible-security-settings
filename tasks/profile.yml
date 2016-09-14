@@ -1,0 +1,21 @@
+---
+- name: Set session timeout
+  lineinfile: dest=/etc/profile
+              regexp='^TMOUT=.*'
+              insertafter=EOF
+              line='TMOUT={{shell_timeout}}'
+  when: shell_timeout != '0'
+
+- name: Set TMOUT readonly
+  lineinfile: dest=/etc/profile
+              regexp='^readonly TMOUT'
+              insertafter='TMOUT={{shell_timeout}}'
+              line='readonly TMOUT'
+  when: shell_timeout != '0'
+
+- name: Set export TMOUT
+  lineinfile: dest=/etc/profile
+              regexp='^export TMOUT'
+              insertafter='readonly TMOUT
+              line='export TMOUT'
+  when: shell_timeout != '0'

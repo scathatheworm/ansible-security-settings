@@ -17,3 +17,4 @@ setloginbanner: 'yes'
 selinux_state: permissive
 firewall_state: stopped
 firewall_enable: 'no'
+shell_timeout: 900
