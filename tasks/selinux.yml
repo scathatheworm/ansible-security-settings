@@ -8,4 +8,4 @@
               line='SELINUX={{selinux_state}}'
               dest=/etc/selinux/config
               state=present
-  when: selinux_config.stat.isreg
+  when: selinux_config.stat.exists and selinux_config.stat.isreg
