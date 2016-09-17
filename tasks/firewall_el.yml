@@ -5,6 +5,8 @@
   when: ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6'
   failed_when: iptables_is_installed.rc > 1
   changed_when: no
+  args:
+    warn: no
 
 - name: Check if iptables-ipv6 is installed
   command: rpm -q iptables-ipv6
@@ -12,6 +14,8 @@
   when: ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6'
   failed_when: ip6tables_is_installed.rc > 1
   changed_when: no
+  args:
+    warn: no
 
 - name: Check if firewalld is installed
   command: rpm -q firewalld
@@ -19,6 +23,8 @@
   when: ansible_distribution_major_version == '7'
   failed_when: firewalld_is_installed.rc > 1
   changed_when: no
+  args:
+    warn: no
 
 - name: Set ip6tables state to {{firewall_state}} on RHEL 5/6
   service: name=ip6tables enabled={{firewall_enable}} state={{firewall_state}}

@@ -4,6 +4,8 @@
   register: susefirewall2_is_installed
   failed_when: susefirewall2_is_installed.rc > 1
   changed_when: no
+  args:
+    warn: no
 
 - name: Set SuSEfirewall2_setup state to {{firewall_state}} on SLES 10/11
   service: name=SuSEfirewall2_setup enabled={{firewall_enable}} state={{firewall_state}}

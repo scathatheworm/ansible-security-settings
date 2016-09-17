@@ -8,6 +8,7 @@
 
 - include: pam_sles.yml
   when: ansible_distribution == 'SLES'
+  tags: pam
 
 - include: sshd_config.yml
   tags: sshd_config
