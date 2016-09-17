@@ -3,6 +3,7 @@ sudo: required
 
 env:
   global:
+    # https://github.com/travis-ci/travis-ci/issues/6461#issuecomment-239577306
     DOCKER_VERSION: "1.9.1-0~trusty"
   matrix:
     - distro: centos7
@@ -44,7 +45,7 @@ script:
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
   # Clean up.
-- 'sudo docker stop "$(cat ${container_id})"'
+  - 'sudo docker stop "$(cat ${container_id})"'
 
 notifications:
-    webhooks: https://galaxy.ansible.com/api/v1/notifications/
+webhooks: https://galaxy.ansible.com/api/v1/notifications/
