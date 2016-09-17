@@ -111,7 +111,7 @@
   lineinfile: dest=/etc/pam.d/system-auth
               regexp='^account.*required.*pam_tally\.so.*'
               insertafter='^account.*required.*pam_unix'
-              line='auth\trequired\tpam_tally.so'
+              line='account\trequired\tpam_tally.so'
               state=present
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux'

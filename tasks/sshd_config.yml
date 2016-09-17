@@ -1,7 +1,7 @@
 ---
 - name: Configure ssh root login to {{sshrootlogin}}
   lineinfile: dest=/etc/ssh/sshd_config
-              regexp='^#*PermitRootLogin.*'
+              regexp='^PermitRootLogin.*'
               line='PermitRootLogin {{sshrootlogin}}'
               insertafter='^#*LoginGraceTime'
               state=present
