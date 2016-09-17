@@ -5,6 +5,7 @@
   when: ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6'
   failed_when: iptables_is_installed.rc > 1
   changed_when: no
+  always_run: True
   args:
     warn: no
 
@@ -14,6 +15,7 @@
   when: ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6'
   failed_when: ip6tables_is_installed.rc > 1
   changed_when: no
+  always_run: True
   args:
     warn: no
 
@@ -23,6 +25,7 @@
   when: ansible_distribution_major_version == '7'
   failed_when: firewalld_is_installed.rc > 1
   changed_when: no
+  always_run: True
   args:
     warn: no
 
