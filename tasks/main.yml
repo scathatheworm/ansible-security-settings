@@ -2,8 +2,12 @@
 - include: login_defs.yml
   tags: login_defs
 
-- include: pam.yml
+- include: pam_el.yml
   tags: pam
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS'
+
+- include: pam_sles.yml
+  when: ansible_distribution == 'SLES'
 
 - include: sshd_config.yml
   tags: sshd_config
@@ -11,8 +15,13 @@
 - include: selinux.yml
   tags: selinux
 
-- include: firewall.yml
+- include: firewall_el.yml
   tags: firewall
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS'
+
+- include: firewall_sles.yml
+  tags: firewall
+  when: ansible_distribution == 'SLES'
 
 - include: profile.yml
   tags: profile
