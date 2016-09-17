@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/scathatheworm/ansible-security-settings?branch=master)](https://travis-ci.org/scathatheworm/ansible-security-settings) [![Ansible Galaxy](http://img.shields.io/badge/galaxy-scathatheworm.security-settings.svg)](https://galaxy.ansible.com/scathatheworm/security-settings)
+[![Build Status](https://travis-ci.org/scathatheworm/ansible-security-settings.svg)](https://travis-ci.org/scathatheworm/ansible-security-settings) [![Ansible Galaxy](http://img.shields.io/badge/galaxy-scathatheworm.security-settings.svg)](https://galaxy.ansible.com/scathatheworm/security-settings)
 
 # ansible-security-settings
 Ansible Role for enforcing security settings related to enterprise compliance on enterprise grade OS
