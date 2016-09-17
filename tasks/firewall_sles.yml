@@ -1,15 +1,24 @@
 ---
+- name: Check if SuSEfirewall2 is installed
+  command: rpm -q SuSEfirewall2
+  register: susefirewall2_is_installed
+  failed_when: susefirewall2_is_installed.rc > 1
+  changed_when: no
+
 - name: Set SuSEfirewall2_setup state to {{firewall_state}} on SLES 10/11
   service: name=SuSEfirewall2_setup enabled={{firewall_enable}} state={{firewall_state}}
   when:
   - ansible_distribution_major_version == '10' or ansible_distribution_major_version == '11'
+  - susefirewall2_is_installed.rc == 0
 
 - name: Set SuSEfirewall2_init state to {{firewall_state}} on SLES 10/11
   service: name=SuSEfirewall2_init enabled={{firewall_enable}} state={{firewall_state}}
   when:
   - ansible_distribution_major_version == '10' or ansible_distribution_major_version == '11'
+  - susefirewall2_is_installed.rc == 0
 
 - name: Set SuSEfirewall2 state to {{firewall_state}} on SLES 12
   service: name=SuSEfirewall2 enabled={{firewall_enable}} state={{firewall_state}}
   when:
   - ansible_distribution_major_version == '12'
+  - susefirewall2_is_installed.rc == 0
