@@ -19,3 +19,9 @@
               insertafter='readonly TMOUT'
               line='export TMOUT'
   when: shell_timeout != '0'
+
+- name: Clear shell timeout if shell_timeout is set to 0, value now is {{shell_timeout}}
+  lineinfile: dest=/etc/profile
+              regexp='^(readonly|export|) *TMOUT.*'
+              state=absent
+  when: shell_timeout == '0'

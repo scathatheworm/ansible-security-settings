@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/scathatheworm/ansible-security-settings?branch=master)](https://travis-ci.org/scathatheworm/ansible-security-settings) [![Ansible Galaxy](http://img.shields.io/badge/galaxy-scathatheworm.security-settings.svg)](https://galaxy.ansible.com/scathatheworm/security-settings)
+
 # ansible-security-settings
 Ansible Role for enforcing security settings related to enterprise compliance on enterprise grade OS
 
@@ -32,5 +34,9 @@ Variables:
 | `passhistory` | 6 | number of password to remember to avoid reusage |
 | `sshrootlogin` | 'no' | allow ssh root login, keep single quotes to avoid boolean evaluation |
 | `sshmainport` | 22 | main ssh port |
-| `sshextraport` | 32 | secondary ssh port |
+| `sshextraport` | 32 | secondary ssh port, set to 0 to disable an extra port |
 | `setloginbanner` | 'yes' | use a login banner in ssh, keep single quotes to avoid boolean evaluation |
+| `selinux_state:` | permissive | selinux configuration value |
+| `firewall_state:` | stopped | Firewall desired status |
+| `firewall_enable:` |'no' | Desired firewall configuration status |
+| `shell_timeout` | 900 | desired shell timeout in seconds, set 0 to disable |
