@@ -37,7 +37,7 @@ script:
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml --syntax-check'
 
   # Test role.
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml --tags "login_defs,pam,sshd_config,profile,selinux"'
+  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook -D /etc/ansible/roles/role_under_test/tests/test.yml --tags "login_defs,pam,sshd_config,profile,selinux"'
 
   # Test role idempotence.
   - idempotence=$(mktemp)
