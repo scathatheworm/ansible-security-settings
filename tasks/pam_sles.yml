@@ -41,7 +41,7 @@
   - ansible_distribution_major_version == '12' or ansible_distribution_version == '11.3' or ansible_distribution_version == '11.4'
 
 - name: Set password history for SLES 10
-  lineinfile: dest=/etc/pam.d/common-passwd
+  lineinfile: dest=/etc/pam.d/common-password
               regexp='^password.*required.*pam_pwcheck'
               insertbefore='^password.*required.*pam_unix'
               line='password\trequired\tpam_pwcheck.so remember={{passhistory}} use_authtok use_first_pass'
@@ -67,7 +67,7 @@
   - ansible_distribution_major_version == '12' or ansible_distribution_major_version == '11'
 
 - name: Set password complexity for SLES 10
-  lineinfile: dest=/etc/pam.d/common-passwd
+  lineinfile: dest=/etc/pam.d/common-password
               regexp='^password.*required.*pam_cracklib'
               insertbefore='^password.*required.*pam_pwcheck'
               line='password\trequired\tpam_cracklib.so use_authtok retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}}'
@@ -76,7 +76,7 @@
   - ansible_distribution_major_version == '10'
 
 - name: Add initial pwcheck module to SLES 10 for sanity
-  lineinfile: dest=/etc/pam.d/common-passwd
+  lineinfile: dest=/etc/pam.d/common-password
               regexp='^password.*required.*pam_pwcheck\.so$'
               insertbefore='password.*required.*pam_cracklib.so'
               line='password\trequired\tpam_pwcheck.so'
