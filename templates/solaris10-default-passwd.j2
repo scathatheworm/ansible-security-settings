@@ -1,0 +1,52 @@
+#ident  "@(#)passwd.dfl 1.8     14/01/24 SMI"
+#
+# Copyright (c) 1989, 2014, Oracle and/or its affiliates. All rights reserved.
+#
+MAXWEEKS={{solaris_maxweeks}}
+MINWEEKS={{solaris_minweeks}}
+WARNWEEKS={{solaris_warnweeks}}
+PASSLENGTH={{pwquality_minlen}}
+
+# NAMECHECK enables/disables login name checking.
+# The default is to do login name checking.
+# Specifying a value of "NO" will disable login name checking.
+#
+NAMECHECK=YES
+
+# HISTORY sets the number of prior password changes to keep and
+# check for a user when changing passwords.  Setting the HISTORY
+# value to zero (0), or removing/commenting out the flag will
+# cause all users' prior password history to be discarded at the
+# next password change by any user.  No password history will
+# be checked if the flag is not present or has zero value.
+# The maximum value of HISTORY is 26.
+#
+# This flag is only enforced for user accounts defined in the
+# local passwd(4)/shadow(4) files.
+#
+HISTORY={{passhistory}}
+#
+# Password complexity tunables.  The values listed are the defaults
+# which are compatible with previous releases of passwd.
+# See passwd(1) and pam_authtok_check(5) for use warnings and
+# discussion of the use of these options.
+#
+MINDIFF=3
+MINALPHA=2
+#MINNONALPHA=1
+MINUPPER={{pwquality_ucredit|abs}}
+MINLOWER={{pwquality_lcredit|abs}}
+MAXREPEATS={{pwquality_maxrepeat}}
+MINSPECIAL={{pwquality_ocredit|abs}}
+MINDIGIT={{pwquality_dcredit|abs}}
+WHITESPACE=NO
+#
+# 
+# passwd performs dictionary lookups if DICTIONLIST or DICTIONDBDIR
+# is defined. If the password database does not yet exist, it is
+# created by passwd. See passwd(1), pam_authtok_check(5) and
+# mkdict(1) for more information.
+#
+DICTIONLIST=/usr/share/lib/dict/words
+DICTIONDBDIR=/var/passwd
+#DICTIONMINWORDLENGTH=3

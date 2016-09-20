@@ -14,7 +14,9 @@ Configures:
 * pam tally and faillock modules for automated account lockout on failures
 * password history for no reuse
 * password complexity
-* restrict root logins to system console
+* ssh port, rootlogin, banner settings
+* selinux and firewall state
+* shell timeout
 
 Variables:
 
@@ -22,7 +24,7 @@ Variables:
 | -------------- | ------------- | -----------------------------------|
 | `os_auth_pw_max_age` | 60 | Max days a password is valid before requiring a change |
 | `os_auth_pw_min_age` | 10 | Min days of age a password must have before it can be changed |
-| `os_auth_pw_min_age` | 7 | Days before password expires that account will be warned |
+| `os_auth_pw_warn_age` | 7 | Days before password expires that account will be warned |
 | `fail_deny` | 5 | Amount of times failed password can be tried before locking the account |
 | `fail_unlock` | 300 | Seconds that must pass before account is unlocked after failed logins |
 | `pwquality_minlen` | 8 | Minimum password length in characters |
@@ -40,3 +42,7 @@ Variables:
 | `firewall_state:` | stopped | Firewall desired status |
 | `firewall_enable:` |'no' | Desired firewall configuration status |
 | `shell_timeout` | 900 | desired shell timeout in seconds, set 0 to disable |
+| `solaris_maxweeks` | 9 | Max Weeks a password is valid before requiring a change in solaris |
+| `solaris_minweeks` | 1 | Min weeks a password must age before it can be changed in solaris |
+| `solaris_warnweeks` | 2 | Weeks before it expires that account will be warned to change password in solaris |
+| `sshd_solaris_restrict_ipv4` | True | Restrict ssh connections to ipv4 in solaris as workaround for DISPLAY issues |

@@ -1,0 +1,24 @@
+---
+- name: Set password complexity, aging and history for Solaris 10
+  template: src=templates/solaris10-default-passwd.j2
+            dest=/etc/default/passwd
+            owner=root
+            group=sys
+            mode=444
+
+- name: Set solaris login defaults
+  template: src=templates/solaris_default_login.j2
+            dest=/etc/default/login
+            owner=root
+            group=sys
+            mode=444
+
+- name: Set TCP strong initial random number
+  lineinfile: dest=/etc/default/inetinit
+              regexp='^TCP_STRONG_ISS.*'
+              line='TCP_STRONG_ISS=2'
+
+- name: Set lockout policy in Solaris 10
+  lineinfile: dest=/etc/security/policy.conf
+              regexp='^LOCK_AFTER_RETRIES.*'
+              line='LOCK_AFTER_RETRIES=YES'

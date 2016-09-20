@@ -1,0 +1,15 @@
+---
+- name: Disable telnet 
+  service: name=telnet state=stopped enabled=no
+
+- name: Disable ftp
+  service: name=ftp state=stopped enabled=no
+
+- name: Disable rlogin
+  service: name=rlogin state=stopped enabled=no
+
+- name: Disable cde_printinfo
+  service: name=application/cde-printinfo state=stopped enabled=no
+
+- name: Disable application/print
+  service: name=print/rfc1179 state=stopped enabled=no

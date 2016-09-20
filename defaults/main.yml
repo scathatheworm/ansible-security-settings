@@ -18,3 +18,7 @@ selinux_state: permissive
 firewall_state: stopped
 firewall_enable: 'no'
 shell_timeout: 900
+solaris_maxweeks: 9
+solaris_minweeks: 1
+solaris_warnweeks: 2
+sshd_solaris_restrict_ipv4: True
