@@ -7,6 +7,9 @@ galaxy_info:
   platforms:
     - name: EL
     - name: SLES
+    - name: Solaris
+      versions:
+      - 10
   galaxy_tags:
     - system
     - security
