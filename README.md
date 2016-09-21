@@ -46,3 +46,4 @@ Variables:
 | `solaris_minweeks` | 1 | Min weeks a password must age before it can be changed in solaris |
 | `solaris_warnweeks` | 2 | Weeks before it expires that account will be warned to change password in solaris |
 | `sshd_solaris_restrict_ipv4` | True | Restrict ssh connections to ipv4 in solaris as workaround for DISPLAY issues |
+| `solaris_dictionary_minwordlength` | 5 | Solaris minimum dictionary word length |

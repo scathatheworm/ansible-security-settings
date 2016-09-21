@@ -22,3 +22,4 @@ solaris_maxweeks: 9
 solaris_minweeks: 1
 solaris_warnweeks: 2
 sshd_solaris_restrict_ipv4: True
+solaris_dictionary_minwordlength: 5
