@@ -67,3 +67,15 @@
               mode=600
   notify: restart sshd
   when: setloginbanner == 'yes'
+
+- name: Fix SFTP binary path in SLES12 which breaks after upgrade
+  lineinfile: dest=/etc/ssh/sshd_config
+              regexp='^\s*Subsystem\s+sftp\s+/usr/lib(64|)/ssh/sftp-server\s*$'
+              line='Subsystem\tsftp\t/usr/lib/ssh/sftp-server'
+              owner=root
+              group=root
+              mode=600
+  notify: restart sshd
+  when:
+  - ansible_distribution == 'SLES'
+  - ansible_distribution_major_version == '12'
