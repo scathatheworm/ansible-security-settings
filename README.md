@@ -42,8 +42,5 @@ Variables:
 | `firewall_state:` | stopped | Firewall desired status |
 | `firewall_enable:` |'no' | Desired firewall configuration status |
 | `shell_timeout` | 900 | desired shell timeout in seconds, set 0 to disable |
-| `solaris_maxweeks` | 9 | Max Weeks a password is valid before requiring a change in solaris |
-| `solaris_minweeks` | 1 | Min weeks a password must age before it can be changed in solaris |
-| `solaris_warnweeks` | 2 | Weeks before it expires that account will be warned to change password in solaris |
 | `sshd_solaris_restrict_ipv4` | True | Restrict ssh connections to ipv4 in solaris as workaround for DISPLAY issues |
 | `solaris_dictionary_minwordlength` | 5 | Solaris minimum dictionary word length |

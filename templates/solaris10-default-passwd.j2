@@ -2,9 +2,9 @@
 #
 # Copyright (c) 1989, 2014, Oracle and/or its affiliates. All rights reserved.
 #
-MAXWEEKS={{solaris_maxweeks}}
-MINWEEKS={{solaris_minweeks}}
-WARNWEEKS={{solaris_warnweeks}}
+MAXWEEKS={{(os_auth_pw_max_age/7)|round|int}}
+MINWEEKS={{(os_auth_pw_min_age/7)|round|int}}
+WARNWEEKS={{(os_auth_pw_warn_age/7)|round|int}}
 PASSLENGTH={{pwquality_minlen}}
 
 # NAMECHECK enables/disables login name checking.
