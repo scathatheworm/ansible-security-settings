@@ -60,7 +60,7 @@
 - name: Set password history for SLES 11 and 12
   lineinfile: dest=/etc/pam.d/common-password
               regexp='^password.*required.*pam_pwhistory'
-              insertbefore='^password.*requisite.*pam_unix'
+              insertbefore='^password.*requi.*pam_unix'
               line='password\trequired\tpam_pwhistory.so remember={{passhistory}} use_authtok'
               state=present
   when:
