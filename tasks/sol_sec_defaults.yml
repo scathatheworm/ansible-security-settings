@@ -22,3 +22,11 @@
   lineinfile: dest=/etc/security/policy.conf
               regexp='^LOCK_AFTER_RETRIES.*'
               line='LOCK_AFTER_RETRIES=YES'
+
+- name: Disable keyboard and serial physical sendbreak
+  lineinfile: dest=/etc/default/kbd
+              regexp='^#?KEYBOARD_ABORT=disable.*'
+              line='KEYBOARD_ABORT=disable'
+              insertafter='# abort sequences'
+              state=present
+  when: ansible_container is not defined
