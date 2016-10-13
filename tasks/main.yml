@@ -47,3 +47,9 @@
 
 - include: profile.yml
   tags: profile
+
+- include: disable_ctrlaltdel.yml
+  tags: ctrlaltdel
+  when:
+  - disable_ctrlaltdel
+  - ansible_system == 'Linux'

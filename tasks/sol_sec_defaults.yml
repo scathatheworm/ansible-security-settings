@@ -29,4 +29,26 @@
               line='KEYBOARD_ABORT=disable'
               insertafter='# abort sequences'
               state=present
-  when: ansible_container is not defined
+  when: 
+  - ansible_container is not defined
+  - disable_ctrlaltdel
+
+- name: Set accountunlock perl script
+  template: src=accountunlock.j2
+            dest={{solaris_accountunlock_dir}}/bin/accountunlock
+            owner=root
+            group=root
+            mode=755
+
+- name: Set header for ansible management of accountunlock cron job
+  lineinfile: dest=/var/spool/cron/crontabs/root
+              regexp='^# Script to unlock accounts.*'
+              backrefs=yes
+              insertbefore='\* \* \* \* \* {{solaris_accountunlock_dir}}/accountunlock >/dev/null'
+              line='#Ansible{{":"}} Script to unlock accounts'
+
+- name: Script to unlock accounts
+  cron: name='Script to unlock accounts'
+        user=root
+        state=present
+        job='{{solaris_accountunlock_dir}}/bin/accountunlock >/dev/null'

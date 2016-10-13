@@ -1,0 +1,20 @@
+---
+- name: Disable Ctrl-Alt-Del reboot - sysvinit
+  lineinfile: dest=/etc/inittab
+              regexp='^ca{{":"}}.*{{":"}}ctrlaltdel.*'
+              line='ca{{":"}}12345{{":"}}ctrlaltdel{{":"}}/bin/echo \"CTRL-ALT-DEL is disabled\"'
+              state=present
+  when: ansible_service_mgr == 'sysvinit'
+
+- name: Disable Ctrl-Alt-Del reboot - upstart
+  lineinfile: dest=/etc/init/control-alt-delete.conf
+              regexp='^exec /sbin/shutdown -r now.*'
+              insertafter='start on control-alt-delete'
+              line='exec /usr/bin/logger -p authpriv.notice -t init \"Ctrl-Alt-Del was pressed and ignored\"'
+  when: ansible_service_mgr == 'upstart'
+
+- name: Disable Ctrl-Alt-Del reboot - systemd
+  file: path=/etc/systemd/system/ctrl-alt-del.target
+        state=link
+        src=/dev/null
+  when: ansible_service_mgr == 'systemd'

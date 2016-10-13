@@ -17,6 +17,7 @@ Configures:
 * ssh port, rootlogin, banner settings
 * selinux and firewall state
 * shell timeout
+* physical sendbreak and ctrl-alt-del disabling
 
 Variables:
 
@@ -44,3 +45,4 @@ Variables:
 | `shell_timeout` | 900 | desired shell timeout in seconds, set 0 to disable |
 | `sshd_solaris_restrict_ipv4` | True | Restrict ssh connections to ipv4 in solaris as workaround for DISPLAY issues |
 | `solaris_dictionary_minwordlength` | 5 | Solaris minimum dictionary word length |
+| `disable_ctrlaltdel` | True | Whether to disable Control-Alt-Del and physical sendbreak in Solaris |

@@ -1,0 +1,163 @@
+#!/usr/bin/perl
+#
+# Author: Thomas Menini
+#
+# Version: 1.1 - Make script work on Linux or Solaris
+# Date: 10/4/2007
+#
+# Version: 1.0 - Initial version Solaris only
+# Date: 9/21/2007
+#
+# Description:  Script to run on a scheduled basis to detect and unlock accounts
+#               which were locked automatically due to failed password attempts.
+#
+# Known issues:  If an account is unlocked after the script notices the lockout and
+#               before {{(fail_unlock/60)|round|int}} minutes, the script will still run the password unlock command.
+#               I felt this was not an issue, and did not want to increase the code complexity
+#               since no harm can occur.
+
+use strict;
+
+##################################################################
+# Configurable options
+#
+# unlockTime is in seconds.
+#
+# We try to determine the amount of retries automatically from Solaris
+# However on Linux we can not guarantee where that information is stored
+# so we set the default in this file to {{fail_deny}}
+##################################################################
+my $retries={{fail_deny}};
+my $unlockTime={{fail_unlock}};
+my $baseDir="{{solaris_accountunlock_dir}}";
+my $accountLockDBLocation = "var/accountunlock.db";
+my $shadowLocation="/etc/shadow";
+
+
+##################################################################
+my $os = "$^O";
+my @shadowEntry;
+my %lockedAccounts = ();
+my $key;
+my $value;
+my $currentTime = time;
+my @defaultLogin;
+my @grepResults;
+my @results;
+my @resultsArray;
+my $loggercmd;
+
+# Determine the location of the Logger command
+if (-e "/usr/bin/logger")
+        {
+        $loggercmd = "/usr/bin/logger";
+        }
+else {
+        $loggercmd = "/bin/logger";
+        }
+
+# For Solaris we can use the Retries variable in /etc/default/login
+
+if ($os eq "solaris") {
+  #
+  # Determine the number of Retries before an account is locked out.
+  #
+  open (DEFAULTLOGIN, "</etc/default/login");
+  @defaultLogin = (<DEFAULTLOGIN>);
+  @grepResults = grep (/^RETRIES/, @defaultLogin);
+  @results = split(/=/, $grepResults[0]);
+  $retries = $results[1];
+  chop($retries);
+}
+
+# Check to see if the account lock database file exists,
+# if not create it.
+if (! -e "$baseDir/$accountLockDBLocation" )
+        {
+        open (LOCKED, ">>$baseDir/$accountLockDBLocation")
+        }
+
+# Open colon separated text file.
+open (LOCKED,"<$baseDir/$accountLockDBLocation") || die ("Unable to open LOCKED DB file for read: " . $!);
+
+#
+# Populate the lockedAccounts hash with the currently known 
+# locked accounts
+while (<LOCKED>) {
+        chop;
+        ($key, $value) = split(":");
+        $lockedAccounts{$key} = $value;
+        }
+close(LOCKED);
+#
+# Check the accounts listed in the file to determine if more than {{(fail_unlock/60)|round|int}} minutes has passed.
+# Unlock the account if the account has been locked for more than {{(fail_unlock/60)|round|int}} minutes.
+#
+while ( my ($key, $value) = each(%lockedAccounts) ) {
+        if (($currentTime - $value) >  $unlockTime)
+                {
+                if ($os eq "solaris") 
+                  {
+                  system "/usr/bin/passwd -u $key";
+                  }
+                elsif ($os eq "linux") 
+                  {
+                  system "/usr/bin/faillog -u $key -r";
+                  }
+                system("$loggercmd -p auth.notice \"accountunlock: User $key has been automatically unlocked after {{(fail_unlock/60)|round|int}} minutes\"");
+                delete $lockedAccounts{$key};
+                }
+}
+#
+# Open /etc/shadow and check the last field to determine the number of failed logins.
+# If the account is alread listed in the database we do not want to update the list of locked accounts.
+#
+if ($os eq "solaris")
+{
+  open (SHADOW,"<$shadowLocation") || die ("Unable to open shadow file");
+  foreach (<SHADOW>) 
+  {
+        chop;
+        @shadowEntry = split(":");
+        if ($shadowEntry[8] >= $retries) 
+        {
+                unless ($lockedAccounts{$shadowEntry[0]}) 
+                        {
+                        system("$loggercmd -p auth.notice \"accountunlock: User $shadowEntry[0] is locked due to more than $retries login failures \"");
+                        $lockedAccounts{$shadowEntry[0]} = $currentTime;
+                        }
+        }
+  }     
+}
+elsif ($os eq "linux")
+{
+  # 
+  # In Linux we need to run the faillog command to determine the number of failed logins
+  #
+  open (SHADOW,"/usr/bin/faillog|") || die ("Unable to open faillog output");
+  # Get one line which is the header for faillog
+  <SHADOW>;
+  foreach (<SHADOW>) 
+  {
+        chop;
+        @shadowEntry = split;
+        if ($shadowEntry[1] >= $retries) 
+        {
+                unless ($lockedAccounts{$shadowEntry[0]}) 
+                        {
+                        system("$loggercmd -p auth.notice \"accountunlock: User $shadowEntry[0] is locked due to more than $retries login failures \"");
+                        $lockedAccounts{$shadowEntry[0]} = $currentTime;
+                        }
+        }
+  }
+}
+close (SHADOW);
+#
+# Write the new account lockout database file.
+#
+open (LOCKED,">$baseDir/$accountLockDBLocation") || die ("Unable to open LOCKED DB file for writing: " . $!);
+while ( my ($key, $value) = each(%lockedAccounts) ) {
+        print LOCKED "$key:$value\n";
+}
+close (LOCKED);
+
