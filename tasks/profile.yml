@@ -4,24 +4,24 @@
               regexp='^TMOUT=.*'
               insertbefore='^readonly TMOUT'
               line='TMOUT={{shell_timeout}}'
-  when: shell_timeout != '0'
+  when: shell_timeout != 0
 
 - name: Set TMOUT readonly
   lineinfile: dest=/etc/profile
               regexp='^readonly TMOUT'
               insertafter='TMOUT={{shell_timeout}}'
               line='readonly TMOUT'
-  when: shell_timeout != '0'
+  when: shell_timeout != 0
 
 - name: Set export TMOUT
   lineinfile: dest=/etc/profile
               regexp='^export TMOUT.*'
               insertafter='readonly TMOUT'
               line='export TMOUT'
-  when: shell_timeout != '0'
+  when: shell_timeout != 0
 
 - name: Clear shell timeout if shell_timeout is set to 0, value now is {{shell_timeout}}
   lineinfile: dest=/etc/profile
               regexp='^(readonly|export|) *TMOUT.*'
               state=absent
-  when: shell_timeout == '0'
+  when: shell_timeout == 0
