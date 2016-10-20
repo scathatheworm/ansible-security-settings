@@ -40,7 +40,7 @@ Variables:
 | `selinux_state` | permissive | selinux configuration value |
 | `firewall_state` | stopped | Firewall desired status |
 | `firewall_enable` |'no' | Desired firewall configuration status |
-| `shell_timeout` | 900 | desired shell timeout in seconds, set 0 to disable |
+| `shell_timeout` | 0 | desired shell timeout in seconds, set 0 to disable |
 | `sshd_solaris_restrict_ipv4` | True | Restrict ssh connections to ipv4 in solaris as workaround for DISPLAY issues |
 | `solaris_dictionary_minwordlength` | 5 | Solaris minimum dictionary word length |
 | `disable_ctrlaltdel` | True | Whether to disable Control-Alt-Del and physical sendbreak in Solaris |

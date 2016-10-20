@@ -17,7 +17,7 @@ setloginbanner: 'yes'
 selinux_state: permissive
 firewall_state: stopped
 firewall_enable: 'no'
-shell_timeout: 900
+shell_timeout: 0
 sshd_solaris_restrict_ipv4: True
 solaris_dictionary_minwordlength: 5
 solaris_accountunlock_dir: /usr/local
