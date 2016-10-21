@@ -7,10 +7,11 @@
   when: ansible_service_mgr == 'sysvinit'
 
 - name: Disable Ctrl-Alt-Del reboot - upstart
-  lineinfile: dest=/etc/init/control-alt-delete.conf
-              regexp='^exec /sbin/shutdown -r now.*'
-              insertafter='start on control-alt-delete'
-              line='exec /usr/bin/logger -p authpriv.notice -t init \"Ctrl-Alt-Del was pressed and ignored\"'
+  copy: src=control-alt-del.conf
+        dest=/etc/init/control-alt-delete.conf
+        owner=root
+        group=root
+        mode=0644
   when: ansible_service_mgr == 'upstart'
 
 - name: Disable Ctrl-Alt-Del reboot - systemd
