@@ -44,3 +44,4 @@ Variables:
 | `sshd_solaris_restrict_ipv4` | True | Restrict ssh connections to ipv4 in solaris as workaround for DISPLAY issues |
 | `solaris_dictionary_minwordlength` | 5 | Solaris minimum dictionary word length |
 | `disable_ctrlaltdel` | True | Whether to disable Control-Alt-Del and physical sendbreak in Solaris |
+| `solaris_disable_services` | false | Disable unsafe solaris services |
