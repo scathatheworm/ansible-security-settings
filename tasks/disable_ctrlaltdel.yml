@@ -6,8 +6,7 @@
               state=present
   when:
   - ansible_service_mgr == 'sysvinit'
-  - ansible_virtualization_role is defined
-  - ansible_virtualization_role != 'guest'
+  - ansible_virtualization_role is not defined or (ansible_virtualization_role is defined and ansible_virtualization_role != 'guest')
 
 - name: Disable Ctrl-Alt-Del reboot - upstart
   copy: src=control-alt-del.conf
@@ -17,8 +16,7 @@
         mode=0644
   when:
   - ansible_service_mgr == 'upstart'
-  - ansible_virtualization_role is defined
-  - ansible_virtualization_role != 'guest'
+  - ansible_virtualization_role is not defined or (ansible_virtualization_role is defined and ansible_virtualization_role != 'guest')
 
 - name: Disable Ctrl-Alt-Del reboot - systemd
   file: path=/etc/systemd/system/ctrl-alt-del.target
@@ -26,5 +24,4 @@
         src=/dev/null
   when:
   - ansible_service_mgr == 'systemd'
-  - ansible_virtualization_role is defined
-  - ansible_virtualization_role != 'guest'
+  - ansible_virtualization_role is not defined or (ansible_virtualization_role is defined and ansible_virtualization_role != 'guest')
