@@ -111,7 +111,7 @@
   lineinfile: dest=/etc/pam.d/system-auth
               regexp='^password.*sufficient.*pam_unix\.so.*'
               insertbefore='^password.*required.*pam_deny'
-              line='password\tsufficient\tpam_unix.so md5 shadow remember={{passhistory}} nullok try_first_pass use_authtok'
+              line='password\tsufficient\tpam_unix.so sha512 shadow remember={{passhistory}} nullok try_first_pass use_authtok'
               state=present
   when:
   - ansible_distribution_major_version == '5'
