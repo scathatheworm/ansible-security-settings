@@ -4,7 +4,10 @@
               regexp='^ca{{":"}}.*{{":"}}ctrlaltdel.*'
               line='ca{{":"}}12345{{":"}}ctrlaltdel{{":"}}/bin/echo \"CTRL-ALT-DEL is disabled\"'
               state=present
-  when: ansible_service_mgr == 'sysvinit'
+  when:
+  - ansible_service_mgr == 'sysvinit'
+  - ansible_virtualization_role is defined
+  - ansible_virtualization_role != 'guest'
 
 - name: Disable Ctrl-Alt-Del reboot - upstart
   copy: src=control-alt-del.conf
@@ -12,10 +15,16 @@
         owner=root
         group=root
         mode=0644
-  when: ansible_service_mgr == 'upstart'
+  when:
+  - ansible_service_mgr == 'upstart'
+  - ansible_virtualization_role is defined
+  - ansible_virtualization_role != 'guest'
 
 - name: Disable Ctrl-Alt-Del reboot - systemd
   file: path=/etc/systemd/system/ctrl-alt-del.target
         state=link
         src=/dev/null
-  when: ansible_service_mgr == 'systemd'
+  when:
+  - ansible_service_mgr == 'systemd'
+  - ansible_virtualization_role is defined
+  - ansible_virtualization_role != 'guest'
