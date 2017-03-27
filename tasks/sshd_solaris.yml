@@ -99,3 +99,27 @@
               mode=644
   notify: restart sshd
   when: setloginbanner == 'yes'
+
+- name: SSH disable weak ciphers Solaris 10
+  lineinfile: dest=/etc/ssh/sshd_config
+              line='Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
+              regexp='^Ciphers.*$'
+              insertafter='# Default Encryption algorithms and Message Authentication codes'
+              state=present
+              owner=root
+              group=root
+              mode=640
+  when:
+  - ansible_distribution == 'Solaris'
+  - ansible_distribution_version == '10'
+  notify: restart sshd
+
+- name: SSH disable weak HMACs Solaris 10
+  lineinfile: dest=/etc/ssh/sshd_config
+              line='MACS    hmac-sha1'
+              inserafter='Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
+              state=present
+              owner=root
+              group=root
+              mode=640
+  notify: restart sshd
