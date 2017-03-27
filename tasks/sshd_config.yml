@@ -98,7 +98,7 @@
 - name: SSH disable weak HMACs RHEL7/SLES12
   lineinfile: dest=/etc/ssh/sshd_config
               line='MACs hmac-sha1-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-ripemd160'
-              inserafter='Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com'
+              insertafter='Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com'
               state=present
               owner=root
               group=root
@@ -111,7 +111,7 @@
 - name: SSH disable weak HMACs RHEL6/SLES11
   lineinfile: dest=/etc/ssh/sshd_config
               line='MACs hmac-sha1,umac-64@openssh.com,hmac-ripemd160,hmac-sha2-256,hmac-sha2-512'
-              inserafter='Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
+              insertafter='Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
               state=present
               owner=root
               group=root
@@ -124,7 +124,7 @@
 - name: SSH disable weak HMACs RHEL5/SLES10
   lineinfile: dest=/etc/ssh/sshd_config
               line='MACs hmac-sha1,hmac-ripemd160'
-              inserafter='Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
+              insertafter='Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
               state=present
               owner=root
               group=root
