@@ -23,3 +23,4 @@ solaris_dictionary_minwordlength: 5
 solaris_accountunlock_dir: /usr/local
 solaris_disable_services: false
 disable_ctrlaltdel: True
+firewall_enable: false
