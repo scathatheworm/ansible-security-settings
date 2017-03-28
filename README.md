@@ -45,4 +45,4 @@ Variables:
 | `solaris_dictionary_minwordlength` | 5 | Solaris minimum dictionary word length |
 | `disable_ctrlaltdel` | True | Whether to disable Control-Alt-Del and physical sendbreak in Solaris |
 | `solaris_disable_services` | false | Disable unsafe solaris services |
-| `firewall_enable` | false | Configures if the role should check firewall setup |
+| `firewall_check` | false | Configures if the role should check firewall setup |

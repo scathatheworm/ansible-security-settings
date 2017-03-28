@@ -40,13 +40,13 @@
 - include: firewall_el.yml
   tags: firewall
   when:
-  - firewall_enable
+  - firewall_check
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS'
 
 - include: firewall_sles.yml
   tags: firewall
   when:
-  - firewall_enable
+  - firewall_check
   - ansible_distribution == 'SLES'
 
 - include: profile.yml
