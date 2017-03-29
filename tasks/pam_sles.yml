@@ -13,7 +13,7 @@
   lineinfile: dest=/etc/pam.d/common-auth
               regexp='^auth.*required.*pam_tally'
               insertbefore='^auth.*required.*pam_env'
-              line='auth\trequired\tpam_tally.so onerr=fail deny={{fail_deny}} unlock_time={{fail_unlock}} per_user'
+              line='auth\trequired\tpam_tally.so onerr=fail deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %} per_user'
               state=present
   when:
   - ansible_distribution == 'SLES'
@@ -34,7 +34,7 @@
   lineinfile: dest=/etc/pam.d/common-auth
               regexp='^auth.*required.*pam_tally'
               insertbefore='^auth.*required.*pam_env'
-              line='auth\trequired\tpam_tally2.so onerr=fail deny={{fail_deny}} unlock_time={{fail_unlock}}'
+              line='auth\trequired\tpam_tally2.so onerr=fail deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
               state=present
   when:
   - ansible_distribution == 'SLES'

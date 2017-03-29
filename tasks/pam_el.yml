@@ -3,7 +3,7 @@
   lineinfile: dest=/etc/pam.d/system-auth
               regexp='^auth.*required.*pam_tally\.so.*'
               insertafter='^auth.*required.*pam_env'
-              line='auth\trequired\tpam_tally.so per_user deny={{fail_deny}} onerr=fail unlock_time={{fail_unlock}}'
+              line='auth\trequired\tpam_tally.so per_user deny={{fail_deny}} onerr=fail {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
               state=present
   when:
   - ansible_distribution_major_version == '5'
@@ -21,7 +21,7 @@
   lineinfile: dest=/etc/pam.d/password-auth
               regexp='^auth.*required.*pam_tally.*'
               insertafter='^auth.*required.*pam_env'
-              line='auth\trequired\tpam_tally2.so deny={{fail_deny}} onerr=fail unlock_time={{fail_unlock}}'
+              line='auth\trequired\tpam_tally2.so deny={{fail_deny}} onerr=fail {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
               state=present
   when:
   - ansible_distribution_major_version == '6'
@@ -39,7 +39,7 @@
   lineinfile: dest=/etc/pam.d/system-auth
               regexp='^auth.*required.*pam_tally.*'
               insertafter='^auth.*required.*pam_env'
-              line='auth\trequired\tpam_tally2.so deny={{fail_deny}} onerr=fail unlock_time={{fail_unlock}}'
+              line='auth\trequired\tpam_tally2.so deny={{fail_deny}} onerr=fail {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
               state=present
   when:
   - ansible_distribution_major_version == '6'
@@ -57,7 +57,7 @@
   lineinfile: dest=/etc/pam.d/password-auth
               regexp='^auth.*required.*pam_(tally|faillock).*'
               insertafter='^auth.*required.*pam_env'
-              line='auth\trequired\tpam_faillock.so preauth deny={{fail_deny}} unlock_time={{fail_unlock}}'
+              line='auth\trequired\tpam_faillock.so preauth deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
               state=present
   when:
   - ansible_distribution_major_version == '7'
@@ -75,7 +75,7 @@
   lineinfile: dest=/etc/pam.d/system-auth
               regexp='^auth.*required.*pam_(tally|faillock).*'
               insertafter='^auth.*required.*pam_env'
-              line='auth\trequired\tpam_faillock.so preauth deny={{fail_deny}} unlock_time={{fail_unlock}}'
+              line='auth\trequired\tpam_faillock.so preauth deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
               state=present
   when:
   - ansible_distribution_major_version == '7'
@@ -93,7 +93,7 @@
   lineinfile: dest=/etc/pam.d/password-auth
               regexp='^auth.*\[default=die\].*pam_faillock.*'
               insertafter='^auth.*sufficient.*pam_unix'
-              line='auth\t[default=die]\tpam_faillock.so authfail audit deny={{fail_deny}} unlock_time={{fail_unlock}}'
+              line='auth\t[default=die]\tpam_faillock.so authfail audit deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
               state=present
   when:
   - ansible_distribution_major_version == '7'
@@ -102,7 +102,7 @@
   lineinfile: dest=/etc/pam.d/system-auth
               regexp='^auth.*\[default=die\].*pam_faillock.*'
               insertafter='^auth.*sufficient.*pam_unix'
-              line='auth\t[default=die]\tpam_faillock.so authfail audit deny={{fail_deny}} unlock_time={{fail_unlock}}'
+              line='auth\t[default=die]\tpam_faillock.so authfail audit deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
               state=present
   when:
   - ansible_distribution_major_version == '7'
