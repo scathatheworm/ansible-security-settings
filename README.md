@@ -46,3 +46,4 @@ Variables:
 | `disable_ctrlaltdel` | True | Whether to disable Control-Alt-Del and physical sendbreak in Solaris |
 | `solaris_disable_services` | false | Disable unsafe solaris services |
 | `firewall_check` | false | Configures if the role should check firewall setup |
+| `inactive_lock` | 0 | Number of days of inactivity for an account before it is locked, a value of 0 disables inactivity lockout |

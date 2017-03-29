@@ -24,3 +24,4 @@ solaris_accountunlock_dir: /usr/local
 solaris_disable_services: false
 disable_ctrlaltdel: True
 firewall_check: false
+inactive_lock: 0

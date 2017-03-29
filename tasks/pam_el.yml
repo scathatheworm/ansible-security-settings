@@ -80,6 +80,55 @@
   when:
   - ansible_distribution_major_version == '7'
 
+- name: Use pam_lastlog to set inactivity lockout on system-auth
+  lineinfile: dest=/etc/pam.d/system-auth
+              regexp='^auth.*required.*pam_lastlog.so.*'
+              insertafter='^auth.*required.*pam_env'
+              line='auth\trequired\tpam_lastlog.so inactive={{inactive_lock}}'
+  when:
+  - inactive_lock != 0
+
+- name: Use pam_lastlog to set inactivity lockout on password-auth
+  lineinfile: dest=/etc/pam.d/password-auth
+              regexp='^auth.*required.*pam_lastlog.so.*'
+              insertafter='^auth.*required.*pam_env'
+              line='auth\trequired\tpam_lastlog.so inactive={{inactive_lock}}'
+  when:
+  - inactive_lock != 0
+  - ansible_distribution_major_version == '6' or ansible_distribution_major_version == '7'
+
+- name: Configure lastlog database update on session logins system-auth
+  lineinfile: dest=/etc/pam.d/system-auth
+              regexp='^session.*optional.*pam_lastlog.so.*'
+              insertbefore='^session.*optional.*pam_keyinit'
+              line='session\toptional\tpam_lastlog.so silent'
+  when:
+  - inactive_lock != 0
+
+- name: Configure lastlog database update on session logins password-auth
+  lineinfile: dest=/etc/pam.d/password-auth
+              regexp='^session.*optional.*pam_lastlog.so.*'
+              insertbefore='^session.*optional.*pam_keyinit'
+              line='session\toptional\tpam_lastlog.so silent'
+  when:
+  - inactive_lock != 0
+  - ansible_distribution_major_version == '6' or ansible_distribution_major_version == '7'
+
+- name: Remove pam_lastlog from system-auth if disabled for RHEL 5/6/7
+  lineinfile: dest=/etc/pam.d/system-auth
+              regexp='.*pam_lastlog.so.*'
+              state=absent
+  when:
+  - inactive_lock == 0
+
+- name: Remove pam_lastlog from password-auth if disabled for RHEL 6/7
+  lineinfile: dest=/etc/pam.d/password-auth
+              regexp='.*pam_lastlog.so.*'
+              state=absent
+  when:
+  - inactive_lock == 0
+  - ansible_distribution_major_version == '6' or ansible_distribution_major_version == '7'
+
 - name: Insert faillock controls for RedHat 7 system-auth account
   lineinfile: dest=/etc/pam.d/system-auth
               regexp='^account.*required.*pam_(tally|faillock).*'
