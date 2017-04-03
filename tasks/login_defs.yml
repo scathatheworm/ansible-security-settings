@@ -16,3 +16,9 @@
 
 - name: Disable MD5 crypt explicitly
   lineinfile: dest=/etc/login.defs state=present regexp='^MD5_CRYPT_ENAB.*$' line='MD5_CRYPT_ENAB NO' backrefs=yes
+
+- name: SLES 11/12 password CRYPT settings
+  lineinfile: dest=/etc/default/passwd state=present regexp='^CRYPT=.*$' line='CRYPT=sha512' backrefs=yes
+  when:
+  - ansible_distribution == 'SLES'
+  - ansible_distribution_major_version == '12' or ansible_distribution_major_version == '11'
