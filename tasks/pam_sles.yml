@@ -53,37 +53,20 @@
 - name: Configure pam_lastlog inactivity timer for SLES
   lineinfile: dest=/etc/pam.d/common-auth
               regexp='^auth.*required.*pam_lastlog.so.*'
-              insertafter='^auth.*required.*pam_env'
+              insertafter='^auth.*'
               line='auth\trequired\tpam_lastlog.so inactive={{inactive_lock}}'
-              state=present
+              state="{{ 'absent' if (inactive_lock == 0) else 'present' }}"
   when:
   - ansible_distribution == 'SLES'
-  - inactive_lock != 0
 
 - name: Configure lastlog database update on session logins for SLES
   lineinfile: dest=/etc/pam.d/common-session
               regexp='^session.*optional.*pam_lastlog.so.*'
-              insertbefore='^session.*required.*pam_unix2.so'
+              insertafter='^session.*'
               line='session\toptional\tpam_lastlog.so silent'
+              state="{{ 'absent' if (inactive_lock == 0) else 'present' }}"
   when:
   - ansible_distribution == 'SLES'
-  - inactive_lock != 0
-
-- name: Remove pam_lastlog from common-auth SLES if disabled
-  lineinfile: dest=/etc/pam.d/common-auth
-              regexp='.*pam_lastlog.so.*'
-              state=absent
-  when:
-  - ansible_distribution == 'SLES'
-  - inactive_lock == 0
-
-- name: Remove pam_lastlog from common-session SLES if disabled
-  lineinfile: dest=/etc/pam.d/common-session
-              regexp='.*pam_lastlog.so.*'
-              state=absent
-  when:
-  - ansible_distribution == 'SLES'
-  - inactive_lock == 0
 
 - name: Remove pwcheck module from SLES 11 and 12
   lineinfile: dest=/etc/pam.d/common-password
