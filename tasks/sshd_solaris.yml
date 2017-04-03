@@ -105,7 +105,7 @@
               line='Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
               regexp='^Ciphers.*$'
               insertafter='# Default Encryption algorithms and Message Authentication codes'
-              state=present
+              state="{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
               owner=root
               group=sys
               mode=644
@@ -118,7 +118,7 @@
   lineinfile: dest=/etc/ssh/sshd_config
               line='MACS    hmac-sha1'
               insertafter='Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
-              state=present
+              state="{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
               owner=root
               group=sys
               mode=644

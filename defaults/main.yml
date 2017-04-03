@@ -25,3 +25,4 @@ solaris_disable_services: false
 disable_ctrlaltdel: True
 firewall_check: false
 inactive_lock: 0
+ssh_enforce_ciphers: True
