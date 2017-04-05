@@ -15,7 +15,8 @@
   notify: restart sshd
 
 - name: Remove unwanted Port lines from sshd_config
-  lineinfile: dest: /etc/ssh/sshd_config
+  lineinfile:
+    dest: /etc/ssh/sshd_config
     regexp: '^#*Port (?!{{sshmainport}}|{{sshextraport}})'
     state: absent
 
