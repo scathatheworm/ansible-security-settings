@@ -3,132 +3,148 @@
   include_vars: "{{ ansible_os_family }}.yml"
 
 - name: Configure ssh root login to {{sshrootlogin}}
-  lineinfile: dest=/etc/ssh/sshd_config
-              regexp='^PermitRootLogin.*'
-              line='PermitRootLogin {{sshrootlogin}}'
-              insertafter='^#*LoginGraceTime'
-              state=present
-              owner=root
-              group=root
-              mode=640
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin.*'
+    line: 'PermitRootLogin {{sshrootlogin}}'
+    insertafter: '^#*LoginGraceTime'
+    state: present
+    owner: root
+    group: root
+    mode: 640
   notify: restart sshd
 
 - name: Remove unwanted Port lines from sshd_config
-  lineinfile: dest=/etc/ssh/sshd_config
-              regexp='^#*Port (?!{{sshmainport}}|{{sshextraport}})'
-              state=absent
+  lineinfile: dest: /etc/ssh/sshd_config
+    regexp: '^#*Port (?!{{sshmainport}}|{{sshextraport}})'
+    state: absent
 
 - name: SSH Listen on Main Port
-  lineinfile: dest=/etc/ssh/sshd_config
-              insertbefore='^#*AddressFamily'
-              line='Port {{sshmainport}}'
-              state=present
-              owner=root
-              group=root
-              mode=640
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    insertbefore: '^#*AddressFamily'
+    line: 'Port {{sshmainport}}'
+    state: present
+    owner: root
+    group: root
+    mode: 640
   notify: restart sshd
 
 - name: SSH Listen on Extra Port
-  lineinfile: dest=/etc/ssh/sshd_config
-              line='Port {{sshextraport}}'
-              insertafter='Port {{sshmainport}}'
-              state=present
-              owner=root
-              group=root
-              mode=640
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: 'Port {{sshextraport}}'
+    insertafter: 'Port {{sshmainport}}'
+    state: present
+    owner: root
+    group: root
+    mode: 640
   notify: restart sshd
   when: sshextraport != 0
 
 - name: Create login banner
-  copy: src=login_banner dest=/etc/login_banner owner=root group=root mode=644
+  copy:
+    src: login_banner
+    dest: /etc/login_banner
+    owner: root
+    group: root
+    mode: 644
   when: setloginbanner == 'yes'
 
 - name: Remove unwanted login banner references
-  lineinfile: dest=/etc/ssh/sshd_config
-              regexp='^Banner (?!/etc/login_banner)'
-              state=absent
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^Banner (?!/etc/login_banner)'
+    state: absent
   notify: restart sshd
   when: setloginbanner == 'yes'
 
 - name: Remove active login banner references
-  lineinfile: dest=/etc/ssh/sshd_config
-              regexp='^Banner'
-              state=absent
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^Banner'
+    state: absent
   notify: restart sshd
   when: setloginbanner == 'no'
 
 - name: Configure login banner in ssh
-  lineinfile: dest=/etc/ssh/sshd_config
-              line='Banner /etc/login_banner'
-              insertafter='# no default banner path'
-              state=present
-              owner=root
-              group=root
-              mode=640
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: 'Banner /etc/login_banner'
+    insertafter: '# no default banner path'
+    state: present
+    owner: root
+    group: root
+    mode: 640
   notify: restart sshd
   when: setloginbanner == 'yes'
 
 - name: SSH disable weak ciphers RHEL7/SLES12
-  lineinfile: dest=/etc/ssh/sshd_config
-              line='Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com'
-              regexp='^Ciphers.*$'
-              insertafter='# Ciphers and keying'
-              state="{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
-              owner=root
-              group=root
-              mode=640
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com'
+    regexp: '^Ciphers.*$'
+    insertafter: '# Ciphers and keying'
+    state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
+    owner: root
+    group: root
+    mode: 640
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '7' or ansible_distribution_major_version == '12'
   notify: restart sshd
 
 - name: SSH disable weak ciphers RHEL5/6/SLES10/11
-  lineinfile: dest=/etc/ssh/sshd_config
-              line='Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
-              regexp='^Ciphers.*$'
-              state="{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
-              owner=root
-              group=root
-              mode=640
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
+    regexp: '^Ciphers.*$'
+    state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
+    owner: root
+    group: root
+    mode: 640
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6' or ansible_distribution_major_version == '10' or ansible_distribution_major_version == '11'
   notify: restart sshd
 
 - name: SSH disable weak HMACs RHEL7/SLES12
-  lineinfile: dest=/etc/ssh/sshd_config
-              line='MACs hmac-sha1-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-ripemd160'
-              insertafter='Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com'
-              state="{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
-              owner=root
-              group=root
-              mode=640
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: 'MACs hmac-sha1-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-ripemd160'
+    insertafter: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com'
+    state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
+    owner: root
+    group: root
+    mode: 640
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '7' or ansible_distribution_major_version == '12'
   notify: restart sshd
 
 - name: SSH disable weak HMACs RHEL6/SLES11
-  lineinfile: dest=/etc/ssh/sshd_config
-              line='MACs hmac-sha1,umac-64@openssh.com,hmac-ripemd160,hmac-sha2-256,hmac-sha2-512'
-              insertafter='Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
-              state="{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
-              owner=root
-              group=root
-              mode=640
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: 'MACs hmac-sha1,umac-64@openssh.com,hmac-ripemd160,hmac-sha2-256,hmac-sha2-512'
+    insertafter: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
+    state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
+    owner: root
+    group: root
+    mode: 640
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '6' or ansible_distribution_major_version == '11'
   notify: restart sshd
 
 - name: SSH disable weak HMACs RHEL5/SLES10
-  lineinfile: dest=/etc/ssh/sshd_config
-              line='MACs hmac-sha1,hmac-ripemd160'
-              insertafter='Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
-              state="{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
-              owner=root
-              group=root
-              mode=640
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: 'MACs hmac-sha1,hmac-ripemd160'
+    insertafter: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
+    state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
+    owner: root
+    group: root
+    mode: 640
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '10'

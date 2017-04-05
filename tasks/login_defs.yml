@@ -1,24 +1,59 @@
 ---
 - name: Set pass max days
-  lineinfile: dest=/etc/login.defs state=present regexp='^PASS_MAX_DAYS.*$' line='PASS_MAX_DAYS\t{{os_auth_pw_max_age}}' backrefs=yes
+  lineinfile:
+    dest: /etc/login.defs
+    state: present
+    regexp: '^PASS_MAX_DAYS.*$'
+    line: 'PASS_MAX_DAYS\t{{os_auth_pw_max_age}}'
+    backrefs: yes
 
 - name: Set pass min days
-  lineinfile: dest=/etc/login.defs state=present regexp='^PASS_MIN_DAYS.*$' line='PASS_MIN_DAYS\t{{os_auth_pw_min_age}}' backrefs=yes
+  lineinfile:
+    dest: /etc/login.defs
+    state: present
+    regexp: '^PASS_MIN_DAYS.*$'
+    line: 'PASS_MIN_DAYS\t{{os_auth_pw_min_age}}'
+    backrefs: yes
 
 - name: Set pass min length
-  lineinfile: dest=/etc/login.defs state=present regexp='^PASS_MIN_LEN.*$' line='PASS_MIN_LEN\t{{pwquality_minlen}}' backrefs=yes
+  lineinfile:
+    dest: /etc/login.defs
+    state: present
+    regexp: '^PASS_MIN_LEN.*$'
+    line: 'PASS_MIN_LEN\t{{pwquality_minlen}}'
+    backrefs: yes
 
 - name: Set pass warn days
-  lineinfile: dest=/etc/login.defs state=present regexp='^PASS_WARN_AGE.*$' line='PASS_WARN_AGE\t{{os_auth_pw_warn_age}}' backrefs=yes
+  lineinfile:
+    dest: /etc/login.defs
+    state: present
+    regexp: '^PASS_WARN_AGE.*$'
+    line: 'PASS_WARN_AGE\t{{os_auth_pw_warn_age}}'
+    backrefs: yes
 
 - name: Set password encryption to SHA512
-  lineinfile: dest=/etc/login.defs state=present regexp='^ENCRYPT_METHOD\s.*$' line='ENCRYPT_METHOD\tSHA512' backrefs=yes
+  lineinfile:
+    dest: /etc/login.defs
+    state: present
+    regexp: '^ENCRYPT_METHOD\s.*$'
+    line: 'ENCRYPT_METHOD\tSHA512'
+    backrefs: yes
 
 - name: Disable MD5 crypt explicitly
-  lineinfile: dest=/etc/login.defs state=present regexp='^MD5_CRYPT_ENAB.*$' line='MD5_CRYPT_ENAB NO' backrefs=yes
+  lineinfile:
+    dest: /etc/login.defs
+    state: present
+    regexp: '^MD5_CRYPT_ENAB.*$'
+    line: 'MD5_CRYPT_ENAB NO'
+    backrefs: yes
 
 - name: SLES 11/12 password CRYPT settings
-  lineinfile: dest=/etc/default/passwd state=present regexp='^CRYPT=.*$' line='CRYPT=sha512' backrefs=yes
+  lineinfile:
+    dest: /etc/default/passwd
+    state: present
+    regexp: '^CRYPT=.*$'
+    line: 'CRYPT=sha512'
+    backrefs: yes
   when:
   - ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '12' or ansible_distribution_major_version == '11'

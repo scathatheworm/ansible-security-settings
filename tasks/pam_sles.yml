@@ -1,121 +1,131 @@
 ---
 - name: Insert tally controls for SLES common-account
-  lineinfile: dest=/etc/pam.d/common-account
-              regexp='^account.*required.*pam_tally'
-              insertbefore='^account.*required.*pam_unix'
-              line='account\trequired\tpam_tally.so'
-              state=present
+  lineinfile:
+    dest: /etc/pam.d/common-account
+    regexp: '^account.*required.*pam_tally'
+    insertbefore: '^account.*required.*pam_unix'
+    line: 'account\trequired\tpam_tally.so'
+    state: present
   when:
-  - ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '10' or ansible_distribution_version == '11.0' or ansible_distribution_version == '11.1' or ansible_distribution_version == '11.2'
 
 - name: Insert tally controls for SLES common-auth
-  lineinfile: dest=/etc/pam.d/common-auth
-              regexp='^auth.*required.*pam_tally'
-              insertbefore='^auth.*required.*pam_env'
-              line='auth\trequired\tpam_tally.so onerr=fail deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %} per_user'
-              state=present
+  lineinfile:
+    dest: /etc/pam.d/common-auth
+    regexp: '^auth.*required.*pam_tally'
+    insertbefore: '^auth.*required.*pam_env'
+    line: 'auth\trequired\tpam_tally.so onerr=fail deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %} per_user'
+    state: present
   when:
-  - ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '10' or ansible_distribution_version == '11.0' or ansible_distribution_version == '11.1' or ansible_distribution_version == '11.2'
 
 
 - name: Insert tally2 controls for SLES common-account
-  lineinfile: dest=/etc/pam.d/common-account
-              regexp='^account.*required.*pam_tally'
-              insertbefore='^account.*required.*pam_unix'
-              line='account\trequired\tpam_tally2.so'
-              state=present
+  lineinfile:
+    dest: /etc/pam.d/common-account
+    regexp: '^account.*required.*pam_tally'
+    insertbefore: '^account.*required.*pam_unix'
+    line: 'account\trequired\tpam_tally2.so'
+    state: present
   when:
-  - ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '12' or ansible_distribution_version == '11.3' or ansible_distribution_version == '11.4'
 
 - name: Insert tally2 controls for SLES common-auth
-  lineinfile: dest=/etc/pam.d/common-auth
-              regexp='^auth.*required.*pam_tally'
-              insertbefore='^auth.*required.*pam_env'
-              line='auth\trequired\tpam_tally2.so onerr=fail deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
-              state=present
+  lineinfile:
+    dest: /etc/pam.d/common-auth
+    regexp: '^auth.*required.*pam_tally'
+    insertbefore: '^auth.*required.*pam_env'
+    line: 'auth\trequired\tpam_tally2.so onerr=fail deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
+    state: present
   when:
-  - ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '12' or ansible_distribution_version == '11.3' or ansible_distribution_version == '11.4'
 
 - name: Set password history for SLES 10
-  lineinfile: dest=/etc/pam.d/common-password
-              regexp='^password.*required.*pam_pwcheck'
-              insertbefore='^password.*required.*pam_unix'
-              line='password\trequired\tpam_pwcheck.so remember={{passhistory}} use_authtok use_first_pass'
-              state=present
+  lineinfile:
+    dest: /etc/pam.d/common-password
+    regexp: '^password.*required.*pam_pwcheck'
+    insertbefore: '^password.*required.*pam_unix'
+    line: 'password\trequired\tpam_pwcheck.so remember={{passhistory}} use_authtok use_first_pass'
+    state: present
   when:
-  - ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '10'
 
 - name: Configure pam_lastlog inactivity timer for SLES
-  lineinfile: dest=/etc/pam.d/common-auth
-              regexp='^auth.*required.*pam_lastlog.so.*'
-              insertafter='^auth.*'
-              line='auth\trequired\tpam_lastlog.so inactive={{inactive_lock}}'
-              state="{{ 'absent' if (inactive_lock == 0) else 'present' }}"
-  when:
-  - ansible_distribution == 'SLES'
+  lineinfile:
+    dest: /etc/pam.d/common-auth
+    regexp: '^auth.*required.*pam_lastlog.so.*'
+    insertafter: '^auth.*'
+    line: 'auth\trequired\tpam_lastlog.so inactive={{inactive_lock}}'
+    state: "{{ 'absent' if (inactive_lock == 0) else 'present' }}"
 
 - name: Configure lastlog database update on session logins for SLES
-  lineinfile: dest=/etc/pam.d/common-session
-              regexp='^session.*optional.*pam_lastlog.so.*'
-              insertafter='^session.*'
-              line='session\toptional\tpam_lastlog.so silent'
-              state="{{ 'absent' if (inactive_lock == 0) else 'present' }}"
-  when:
-  - ansible_distribution == 'SLES'
+  lineinfile:
+    dest: /etc/pam.d/common-session
+    regexp: '^session.*optional.*pam_lastlog.so.*'
+    insertafter: '^session.*'
+    line: 'session\toptional\tpam_lastlog.so silent'
+    state: "{{ 'absent' if (inactive_lock == 0) else 'present' }}"
 
 - name: Remove pwcheck module from SLES 11 and 12
-  lineinfile: dest=/etc/pam.d/common-password
-              regexp='.*pam_pwcheck\.so.*'
-              state=absent
+  lineinfile:
+    dest: /etc/pam.d/common-password
+    regexp: '.*pam_pwcheck\.so.*'
+    state: absent
   when:
   - ansible_distribution_major_version == '12' or ansible_distribution_major_version == '11'
 
 - name: Set password history for SLES 11 and 12
-  lineinfile: dest=/etc/pam.d/common-password
-              regexp='^password.*required.*pam_pwhistory'
-              insertbefore='^password.*requi.*pam_unix'
-              line='password\trequired\tpam_pwhistory.so remember={{passhistory}} use_authtok'
-              state=present
+  lineinfile:
+    dest: /etc/pam.d/common-password
+    regexp: '^password.*required.*pam_pwhistory'
+    insertbefore: '^password.*requi.*pam_unix'
+    line: 'password\trequired\tpam_pwhistory.so remember={{passhistory}} use_authtok'
+    state: present
   when:
   - ansible_distribution_major_version == '12' or ansible_distribution_major_version == '11'
 
 - name: Set password complexity for SLES 10
-  lineinfile: dest=/etc/pam.d/common-password
-              regexp='^password.*required.*pam_cracklib'
-              insertbefore='^password.*required.*pam_pwcheck'
-              line='password\trequired\tpam_cracklib.so use_authtok retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}}'
-              state=present
+  lineinfile:
+    dest: /etc/pam.d/common-password
+    regexp: '^password.*required.*pam_cracklib'
+    insertbefore: '^password.*required.*pam_pwcheck'
+    line: 'password\trequired\tpam_cracklib.so use_authtok retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}}'
+    state: present
   when:
   - ansible_distribution_major_version == '10'
 
 - name: Add initial pwcheck module to SLES 10 for sanity
-  lineinfile: dest=/etc/pam.d/common-password
-              regexp='^password.*required.*pam_pwcheck\.so$'
-              insertbefore='password.*required.*pam_cracklib.so'
-              line='password\trequired\tpam_pwcheck.so'
-              state=present
+  lineinfile:
+    dest: /etc/pam.d/common-password
+    regexp: '^password.*required.*pam_pwcheck\.so$'
+    insertbefore: 'password.*required.*pam_cracklib.so'
+    line: 'password\trequired\tpam_pwcheck.so'
+    state: present
   when:
   - ansible_distribution_major_version == '10'
 
 - name: Set password complexity for SLES 11 and 12
-  lineinfile: dest=/etc/pam.d/common-password
-              regexp='^password.*requi.*pam_cracklib\.so.*'
-              insertbefore='^password.*required.*pam_pwhistory'
-              line='password\trequisite\tpam_cracklib.so retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}} maxrepeat={{pwquality_maxrepeat}}'
+  lineinfile:
+    dest: /etc/pam.d/common-password
+    regexp: '^password.*requi.*pam_cracklib\.so.*'
+    insertbefore: '^password.*required.*pam_pwhistory'
+    line: 'password\trequisite\tpam_cracklib.so retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}} maxrepeat={{pwquality_maxrepeat}}'
+    state: present
   when:
   - ansible_distribution_major_version == '11' or ansible_distribution_major_version == '12'
 
 - name: create pwquality.conf password complexity configuration for SLES12
-  template: src='pwquality.conf.j2' dest='/etc/security/pwquality.conf' owner=root group=root mode=0644
+  template:
+    src: pwquality.conf.j2
+    dest: '/etc/security/pwquality.conf'
+    owner: root
+    group: root
+    mode: 0644
   when: ansible_distribution_major_version == '12'
 
 - name: Remove audio and video groups from defaults
-  lineinfile: dest=/etc/default/useradd
-              backrefs=yes
-              regexp='^GROUPS=.*'
-              line='GROUPS=' 
+  lineinfile:
+    dest: /etc/default/useradd
+    backrefs: yes
+    regexp: '^GROUPS=.*'
+    line: 'GROUPS=' 
