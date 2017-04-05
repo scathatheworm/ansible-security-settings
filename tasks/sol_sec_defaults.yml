@@ -41,7 +41,7 @@
 - name: Set accountunlock perl script
   template:
     src: accountunlock.j2
-    dest: {{solaris_accountunlock_dir}}/bin/accountunlock
+    dest: "{{solaris_accountunlock_dir}}/bin/accountunlock"
     owner: root
     group: root
     mode: 755
