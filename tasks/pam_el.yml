@@ -99,7 +99,7 @@
     dest: /etc/pam.d/system-auth
     regexp: '^session.*optional.*pam_lastlog.so.*'
     insertafter: '^session.*'
-    line: 'session\toptional\tpam_lastlog.so silent'
+    line: "session\toptional\tpam_lastlog.so silent"
     state: "{{ 'absent' if (inactive_lock == 0) else 'present' }}"
   when:
   - ansible_distribution_major_version == '5'
