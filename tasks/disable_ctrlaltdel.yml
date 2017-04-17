@@ -3,7 +3,7 @@
   lineinfile:
     dest: /etc/inittab
     regexp: '^ca{{":"}}.*{{":"}}ctrlaltdel.*'
-    line: 'ca{{":"}}12345{{":"}}ctrlaltdel{{":"}}/bin/echo \"CTRL-ALT-DEL is disabled\"'
+    line: 'ca{{":"}}12345{{":"}}ctrlaltdel{{":"}}/bin/echo "CTRL-ALT-DEL is disabled"'
     state: present
   when:
   - ansible_service_mgr == 'sysvinit'
