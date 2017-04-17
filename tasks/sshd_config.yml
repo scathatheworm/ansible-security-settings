@@ -11,7 +11,7 @@
     state: present
     owner: root
     group: root
-    mode: 640
+    mode: 0640
   notify: restart sshd
 
 - name: Remove unwanted Port lines from sshd_config
@@ -28,7 +28,7 @@
     state: present
     owner: root
     group: root
-    mode: 640
+    mode: 0640
   notify: restart sshd
 
 - name: SSH Listen on Extra Port
@@ -39,7 +39,7 @@
     state: present
     owner: root
     group: root
-    mode: 640
+    mode: 0640
   notify: restart sshd
   when: sshextraport != 0
 
@@ -49,7 +49,7 @@
     dest: /etc/login_banner
     owner: root
     group: root
-    mode: 644
+    mode: 0644
   when: setloginbanner
 
 - name: Configure login banner in ssh
@@ -61,7 +61,7 @@
     state: "{{ 'present' if setloginbanner else 'absent' }}"
     owner: root
     group: root
-    mode: 640
+    mode: 0640
   notify: restart sshd
 
 - name: SSH disable weak ciphers RHEL7/SLES12
@@ -73,7 +73,7 @@
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
     group: root
-    mode: 640
+    mode: 0640
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '7' or ansible_distribution_major_version == '12'
@@ -87,7 +87,7 @@
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
     group: root
-    mode: 640
+    mode: 0640
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6' or ansible_distribution_major_version == '10' or ansible_distribution_major_version == '11'
@@ -101,7 +101,7 @@
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
     group: root
-    mode: 640
+    mode: 0640
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '7' or ansible_distribution_major_version == '12'
@@ -115,7 +115,7 @@
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
     group: root
-    mode: 640
+    mode: 0640
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '6' or ansible_distribution_major_version == '11'
@@ -129,7 +129,7 @@
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
     group: root
-    mode: 640
+    mode: 0640
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
   - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '10'

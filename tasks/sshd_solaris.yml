@@ -11,7 +11,7 @@
     state: present
     owner: root
     group: sys
-    mode: 644
+    mode: 0644
   notify: restart sshd
 
 - name: Solaris - restrict listen to IPv4 if desired
@@ -22,7 +22,7 @@
     insertafter: '# IPv4 only'
     owner: root
     group: sys
-    mode: 644
+    mode: 0644
   notify: restart sshd
   when: sshd_solaris_restrict_ipv4
 
@@ -42,7 +42,7 @@
     line: "\t/usr/lib/ssh/sshd -4"
     owner: root
     group: bin
-    mode: 555
+    mode: 0555
   notify: restart sshd
   when:
   - sshd_solaris_restrict_ipv4
@@ -62,7 +62,7 @@
     state: present
     owner: root
     group: sys
-    mode: 644
+    mode: 0644
   notify: restart sshd
 
 - name: Solaris - SSH Listen on Extra Port
@@ -73,7 +73,7 @@
     state: present
     owner: root
     group: sys
-    mode: 644
+    mode: 0644
   notify: restart sshd
   when: sshextraport != 0
 
@@ -83,7 +83,7 @@
     dest: /etc/issue
     owner: root
     group: root
-    mode: 444
+    mode: 0444
   when: setloginbanner
 
 - name: Solaris - Configure login banner in ssh
@@ -94,7 +94,7 @@
     state: "{{ 'present' if setloginbanner else 'absent' }}"
     owner: root
     group: sys
-    mode: 644
+    mode: 0644
   notify: restart sshd
 
 - name: SSH disable weak ciphers Solaris 10
@@ -106,7 +106,7 @@
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
     group: sys
-    mode: 644
+    mode: 0644
   when:
   - ansible_distribution == 'Solaris'
   - ansible_distribution_version == '10'
@@ -120,5 +120,5 @@
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
     group: sys
-    mode: 644
+    mode: 0644
   notify: restart sshd

@@ -5,7 +5,7 @@
     dest: /etc/default/passwd
     owner: root
     group: sys
-    mode: 444
+    mode: 0444
 
 - name: Set solaris login defaults
   template:
@@ -13,7 +13,7 @@
     dest: /etc/default/login
     owner: root
     group: sys
-    mode: 444
+    mode: 0444
 
 - name: Set TCP strong initial random number
   lineinfile:
@@ -44,7 +44,7 @@
     dest: "{{solaris_accountunlock_dir}}/bin/accountunlock"
     owner: root
     group: root
-    mode: 755
+    mode: 0755
 
 - name: Set header for ansible management of accountunlock cron job
   lineinfile:
