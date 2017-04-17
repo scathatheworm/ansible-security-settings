@@ -51,7 +51,7 @@
     dest: /var/spool/cron/crontabs/root
     regexp: '^# Script to unlock accounts.*'
     backrefs: yes
-    insertbefore: '\* \* \* \* \* {{solaris_accountunlock_dir}}/accountunlock >/dev/null'
+    insertbefore: "'* * * * * {{solaris_accountunlock_dir}}/accountunlock >/dev/null'"
     line: '#Ansible{{":"}} Script to unlock accounts'
 
 - name: Script to unlock accounts
