@@ -50,35 +50,19 @@
     owner: root
     group: root
     mode: 644
-  when: setloginbanner == 'yes'
-
-- name: Remove unwanted login banner references
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: '^Banner (?!/etc/login_banner)'
-    state: absent
-  notify: restart sshd
-  when: setloginbanner == 'yes'
-
-- name: Remove active login banner references
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: '^Banner'
-    state: absent
-  notify: restart sshd
-  when: setloginbanner == 'no'
+  when: setloginbanner
 
 - name: Configure login banner in ssh
   lineinfile:
     dest: /etc/ssh/sshd_config
+    regexp: '^Banner.*$'
     line: 'Banner /etc/login_banner'
     insertafter: '# no default banner path'
-    state: present
+    state: "{{ 'present' if setloginbanner else 'absent' }}"
     owner: root
     group: root
     mode: 640
   notify: restart sshd
-  when: setloginbanner == 'yes'
 
 - name: SSH disable weak ciphers RHEL7/SLES12
   lineinfile:

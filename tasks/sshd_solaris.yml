@@ -39,7 +39,7 @@
   lineinfile:
     dest: /lib/svc/method/sshd
     regexp: '^\s*/usr/lib/ssh/sshd( -4|)\s*$'
-    line: '\t/usr/lib/ssh/sshd -4'
+    line: "\t/usr/lib/ssh/sshd -4"
     owner: root
     group: bin
     mode: 555
@@ -84,35 +84,18 @@
     owner: root
     group: root
     mode: 444
-  when: setloginbanner == 'yes'
-
-- name: Solaris - Remove unwanted login banner references
-  lineinfile: 
-    dest: /etc/ssh/sshd_config
-    regexp: '^Banner (?!/etc/issue)'
-    state: absent
-  notify: restart sshd
-  when: setloginbanner == 'yes'
-
-- name: Solaris - Remove active login banner references if desired
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: '^Banner'
-    state: absent
-  notify: restart sshd
-  when: setloginbanner == 'no'
+  when: setloginbanner
 
 - name: Solaris - Configure login banner in ssh
   lineinfile:
     dest: /etc/ssh/sshd_config
     line: 'Banner /etc/issue'
     insertafter: '# Banner to be printed before authentication starts.*'
-    state: present
+    state: "{{ 'present' if setloginbanner else 'absent' }}"
     owner: root
     group: sys
     mode: 644
   notify: restart sshd
-  when: setloginbanner == 'yes'
 
 - name: SSH disable weak ciphers Solaris 10
   lineinfile:

@@ -13,7 +13,7 @@ passhistory: 6
 sshrootlogin: 'no'
 sshmainport: 22
 sshextraport: 32
-setloginbanner: 'yes'
+setloginbanner: true
 selinux_state: permissive
 firewall_state: stopped
 firewall_enable: 'no'

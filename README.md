@@ -36,7 +36,7 @@ Variables:
 | `sshrootlogin` | 'no' | allow ssh root login, keep single quotes to avoid boolean evaluation |
 | `sshmainport` | 22 | main ssh port |
 | `sshextraport` | 32 | secondary ssh port, set to 0 to disable an extra port |
-| `setloginbanner` | 'yes' | use a login banner in ssh, keep single quotes to avoid boolean evaluation |
+| `setloginbanner` | true | use a login banner in ssh |
 | `selinux_state` | permissive | selinux configuration value |
 | `firewall_state` | stopped | Firewall desired status |
 | `firewall_enable` |'no' | Desired firewall configuration status |
