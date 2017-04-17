@@ -4,7 +4,7 @@
     dest: /etc/pam.d/system-auth
     regexp: '^auth.*required.*pam_tally\.so.*'
     insertafter: '^auth.*required.*pam_env'
-    line: 'auth\trequired\tpam_tally.so per_user deny={{fail_deny}} onerr=fail {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
+    line: "auth\trequired\tpam_tally.so per_user deny={{fail_deny}} onerr=fail {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}"
     state: present
   when:
   - ansible_distribution_major_version == '5'
@@ -14,7 +14,7 @@
     dest: /etc/pam.d/system-auth
     regexp: '^account.*required.*pam_tally\.so.*'
     insertafter: '^account.*required.*pam_unix'
-    line: 'account\trequired\tpam_tally.so'
+    line: "account\trequired\tpam_tally.so"
     state: present
   when:
   - ansible_distribution_major_version == '5'
@@ -24,7 +24,7 @@
     dest: /etc/pam.d/password-auth
     regexp: '^auth.*required.*pam_tally.*'
     insertafter: '^auth.*required.*pam_env'
-    line: 'auth\trequired\tpam_tally2.so deny={{fail_deny}} onerr=fail {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
+    line: "auth\trequired\tpam_tally2.so deny={{fail_deny}} onerr=fail {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}"
     state: present
   when:
   - ansible_distribution_major_version == '6'
@@ -34,7 +34,7 @@
     dest: /etc/pam.d/password-auth
     regexp: '^account.*required.*pam_tally.*'
     insertafter: '^account.*required.*pam_unix'
-    line: 'account\trequired\tpam_tally2.so'
+    line: "account\trequired\tpam_tally2.so"
     state: present
   when:
   - ansible_distribution_major_version == '6'
@@ -44,7 +44,7 @@
     dest: /etc/pam.d/system-auth
     regexp: '^auth.*required.*pam_tally.*'
     insertafter: '^auth.*required.*pam_env'
-    line: 'auth\trequired\tpam_tally2.so deny={{fail_deny}} onerr=fail {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
+    line: "auth\trequired\tpam_tally2.so deny={{fail_deny}} onerr=fail {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}"
     state: present
   when:
   - ansible_distribution_major_version == '6'
@@ -54,7 +54,7 @@
     dest: /etc/pam.d/system-auth
     regexp: '^account.*required.*pam_tally.*'
     insertafter: '^account.*required.*pam_unix'
-    line: 'account\trequired\tpam_tally2.so'
+    line: "account\trequired\tpam_tally2.so"
     state: present
   when:
   - ansible_distribution_major_version == '6'
@@ -64,7 +64,7 @@
     dest: /etc/pam.d/password-auth
     regexp: '^auth.*required.*pam_(tally|faillock).*'
     insertafter: '^auth.*required.*pam_env'
-    line: 'auth\trequired\tpam_faillock.so preauth deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
+    line: "auth\trequired\tpam_faillock.so preauth deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}"
     state: present
   when:
   - ansible_distribution_major_version == '7'
@@ -74,7 +74,7 @@
     dest: /etc/pam.d/password-auth
     regexp: '^account.*required.*pam_(tally|faillock).*'
     insertbefore: '^account.*required.*pam_unix'
-    line: 'account\trequired\tpam_faillock.so'
+    line: "account\trequired\tpam_faillock.so"
     state: present
   when:
   - ansible_distribution_major_version == '7'
@@ -84,7 +84,7 @@
     dest: /etc/pam.d/system-auth
     regexp: '^auth.*required.*pam_(tally|faillock).*'
     insertafter: '^auth.*required.*pam_env'
-    line: 'auth\trequired\tpam_faillock.so preauth deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
+    line: "auth\trequired\tpam_faillock.so preauth deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}"
     state: present
   when:
   - ansible_distribution_major_version == '7'
@@ -94,7 +94,7 @@
     dest: /etc/pam.d/system-auth
     regexp: '^auth.*required.*pam_lastlog.so.*'
     insertafter: '^auth.*'
-    line: 'auth\trequired\tpam_lastlog.so inactive={{inactive_lock}}'
+    line: "auth\trequired\tpam_lastlog.so inactive={{inactive_lock}}"
     state: "{{ 'absent' if (inactive_lock == 0) else 'present' }}"
 
 - name: Use pam_lastlog to set inactivity lockout on password-auth
@@ -102,7 +102,7 @@
     dest: /etc/pam.d/password-auth
     regexp: '^auth.*required.*pam_lastlog.so.*'
     insertafter: '^auth.*'
-    line: 'auth\trequired\tpam_lastlog.so inactive={{inactive_lock}}'
+    line: "auth\trequired\tpam_lastlog.so inactive={{inactive_lock}}"
     state: "{{ 'absent' if (inactive_lock == 0) else 'present' }}"
   when:
   - ansible_distribution_major_version == '6' or ansible_distribution_major_version == '7'
@@ -120,7 +120,7 @@
     dest: /etc/pam.d/password-auth
     regexp: '^session.*optional.*pam_lastlog.so.*'
     insertafter: '^session.*'
-    line: 'session\toptional\tpam_lastlog.so silent'
+    line: "session\toptional\tpam_lastlog.so silent"
     state: "{{ 'absent' if (inactive_lock == 0) else 'present' }}"
   when:
   - ansible_distribution_major_version == '6' or ansible_distribution_major_version == '7'
@@ -130,7 +130,7 @@
     dest: /etc/pam.d/system-auth
     regexp: '^account.*required.*pam_(tally|faillock).*'
     insertbefore: '^account.*required.*pam_unix'
-    line: 'account\trequired\tpam_faillock.so'
+    line: "account\trequired\tpam_faillock.so"
     state: present
   when:
   - ansible_distribution_major_version == '7'
@@ -140,7 +140,7 @@
     dest: /etc/pam.d/password-auth
     regexp: '^auth.*\[default=die\].*pam_faillock.*'
     insertafter: '^auth.*sufficient.*pam_unix'
-    line: 'auth\t[default=die]\tpam_faillock.so authfail audit deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
+    line: "auth\t[default=die]\tpam_faillock.so authfail audit deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}"
     state: present
   when:
   - ansible_distribution_major_version == '7'
@@ -150,7 +150,7 @@
     dest: /etc/pam.d/system-auth
     regexp: '^auth.*\[default=die\].*pam_faillock.*'
     insertafter: '^auth.*sufficient.*pam_unix'
-    line: 'auth\t[default=die]\tpam_faillock.so authfail audit deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
+    line: "auth\t[default=die]\tpam_faillock.so authfail audit deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}"
     state: present
   when:
   - ansible_distribution_major_version == '7'
@@ -160,7 +160,7 @@
     dest: /etc/pam.d/system-auth
     regexp: '^password.*sufficient.*pam_unix\.so.*'
     insertbefore: '^password.*required.*pam_deny'
-    line: 'password\tsufficient\tpam_unix.so sha512 shadow remember={{passhistory}} nullok try_first_pass use_authtok'
+    line: "password\tsufficient\tpam_unix.so sha512 shadow remember={{passhistory}} nullok try_first_pass use_authtok"
     state: present
   when:
   - ansible_distribution_major_version == '5'
@@ -170,7 +170,7 @@
     dest: /etc/pam.d/system-auth
     regexp: '^password.*sufficient.*pam_unix\.so.*'
     insertbefore: '^password.*required.*pam_deny'
-    line: 'password\tsufficient\tpam_unix.so sha512 shadow remember={{passhistory}} nullok try_first_pass use_authtok'
+    line: "password\tsufficient\tpam_unix.so sha512 shadow remember={{passhistory}} nullok try_first_pass use_authtok"
     state: present
   when:
   - ansible_distribution_major_version == '6'
@@ -180,7 +180,7 @@
     dest: /etc/pam.d/system-auth
     regexp: '^password.*sufficient.*pam_unix\.so.*'
     insertbefore: '^password.*required.*pam_deny'
-    line: 'password\tsufficient\tpam_unix.so sha512 shadow nullok try_first_pass use_authtok'
+    line: "password\tsufficient\tpam_unix.so sha512 shadow nullok try_first_pass use_authtok"
     state: present
   when:
   - ansible_distribution_major_version == '7'
@@ -190,7 +190,7 @@
     dest: /etc/pam.d/system-auth
     regexp: '^password.*required.*pam_pwhistory.*'
     insertbefore: '^password.*sufficient.*pam_unix'
-    line: 'password\trequired\tpam_pwhistory.so remember={{passhistory}} use_authtok'
+    line: "password\trequired\tpam_pwhistory.so remember={{passhistory}} use_authtok"
     state: present
   when:
   - ansible_distribution_major_version == '7'
@@ -200,14 +200,14 @@
     dest: /etc/pam.d/system-auth
     regexp: '^password.*requisite.*pam_cracklib.*'
     insertbefore: '^password.*sufficient.*pam_unix'
-    line: 'password\trequisite\tpam_cracklib.so try_first_pass retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}} maxrepeat={{pwquality_maxrepeat}}'
+    line: "password\trequisite\tpam_cracklib.so try_first_pass retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}} maxrepeat={{pwquality_maxrepeat}}"
   when:
   - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6'
 
 - name: create pwquality.conf password complexity configuration for RHEL7
   template:
     src: pwquality.conf.j2
-    dest: '/etc/security/pwquality.conf'
+    dest: /etc/security/pwquality.conf
     owner: root
     group: root
     mode: 0644

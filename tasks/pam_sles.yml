@@ -4,7 +4,7 @@
     dest: /etc/pam.d/common-account
     regexp: '^account.*required.*pam_tally'
     insertbefore: '^account.*required.*pam_unix'
-    line: 'account\trequired\tpam_tally.so'
+    line: "account\trequired\tpam_tally.so"
     state: present
   when:
   - ansible_distribution_major_version == '10' or ansible_distribution_version == '11.0' or ansible_distribution_version == '11.1' or ansible_distribution_version == '11.2'
@@ -14,7 +14,7 @@
     dest: /etc/pam.d/common-auth
     regexp: '^auth.*required.*pam_tally'
     insertbefore: '^auth.*required.*pam_env'
-    line: 'auth\trequired\tpam_tally.so onerr=fail deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %} per_user'
+    line: "auth\trequired\tpam_tally.so onerr=fail deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %} per_user"
     state: present
   when:
   - ansible_distribution_major_version == '10' or ansible_distribution_version == '11.0' or ansible_distribution_version == '11.1' or ansible_distribution_version == '11.2'
@@ -25,7 +25,7 @@
     dest: /etc/pam.d/common-account
     regexp: '^account.*required.*pam_tally'
     insertbefore: '^account.*required.*pam_unix'
-    line: 'account\trequired\tpam_tally2.so'
+    line: "account\trequired\tpam_tally2.so"
     state: present
   when:
   - ansible_distribution_major_version == '12' or ansible_distribution_version == '11.3' or ansible_distribution_version == '11.4'
@@ -35,7 +35,7 @@
     dest: /etc/pam.d/common-auth
     regexp: '^auth.*required.*pam_tally'
     insertbefore: '^auth.*required.*pam_env'
-    line: 'auth\trequired\tpam_tally2.so onerr=fail deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}'
+    line: "auth\trequired\tpam_tally2.so onerr=fail deny={{fail_deny}} {% if fail_unlock != 0 %}unlock_time={{fail_unlock}}{% endif %}"
     state: present
   when:
   - ansible_distribution_major_version == '12' or ansible_distribution_version == '11.3' or ansible_distribution_version == '11.4'
@@ -45,7 +45,7 @@
     dest: /etc/pam.d/common-password
     regexp: '^password.*required.*pam_pwcheck'
     insertbefore: '^password.*required.*pam_unix'
-    line: 'password\trequired\tpam_pwcheck.so remember={{passhistory}} use_authtok use_first_pass'
+    line: "password\trequired\tpam_pwcheck.so remember={{passhistory}} use_authtok use_first_pass"
     state: present
   when:
   - ansible_distribution_major_version == '10'
@@ -55,7 +55,7 @@
     dest: /etc/pam.d/common-auth
     regexp: '^auth.*required.*pam_lastlog.so.*'
     insertafter: '^auth.*'
-    line: 'auth\trequired\tpam_lastlog.so inactive={{inactive_lock}}'
+    line: "auth\trequired\tpam_lastlog.so inactive={{inactive_lock}}"
     state: "{{ 'absent' if (inactive_lock == 0) else 'present' }}"
 
 - name: Configure lastlog database update on session logins for SLES
@@ -63,7 +63,7 @@
     dest: /etc/pam.d/common-session
     regexp: '^session.*optional.*pam_lastlog.so.*'
     insertafter: '^session.*'
-    line: 'session\toptional\tpam_lastlog.so silent'
+    line: "session\toptional\tpam_lastlog.so silent"
     state: "{{ 'absent' if (inactive_lock == 0) else 'present' }}"
 
 - name: Remove pwcheck module from SLES 11 and 12
@@ -79,7 +79,7 @@
     dest: /etc/pam.d/common-password
     regexp: '^password.*required.*pam_pwhistory'
     insertbefore: '^password.*requi.*pam_unix'
-    line: 'password\trequired\tpam_pwhistory.so remember={{passhistory}} use_authtok'
+    line: "password\trequired\tpam_pwhistory.so remember={{passhistory}} use_authtok"
     state: present
   when:
   - ansible_distribution_major_version == '12' or ansible_distribution_major_version == '11'
@@ -89,7 +89,7 @@
     dest: /etc/pam.d/common-password
     regexp: '^password.*required.*pam_cracklib'
     insertbefore: '^password.*required.*pam_pwcheck'
-    line: 'password\trequired\tpam_cracklib.so use_authtok retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}}'
+    line: "password\trequired\tpam_cracklib.so use_authtok retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}}"
     state: present
   when:
   - ansible_distribution_major_version == '10'
@@ -99,7 +99,7 @@
     dest: /etc/pam.d/common-password
     regexp: '^password.*required.*pam_pwcheck\.so$'
     insertbefore: 'password.*required.*pam_cracklib.so'
-    line: 'password\trequired\tpam_pwcheck.so'
+    line: "password\trequired\tpam_pwcheck.so"
     state: present
   when:
   - ansible_distribution_major_version == '10'
@@ -109,7 +109,7 @@
     dest: /etc/pam.d/common-password
     regexp: '^password.*requi.*pam_cracklib\.so.*'
     insertbefore: '^password.*required.*pam_pwhistory'
-    line: 'password\trequisite\tpam_cracklib.so retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}} maxrepeat={{pwquality_maxrepeat}}'
+    line: "password\trequisite\tpam_cracklib.so retry=3 minlen={{pwquality_minlen}} dcredit={{pwquality_dcredit}} ucredit={{pwquality_ucredit}} lcredit={{pwquality_lcredit}} ocredit={{pwquality_ocredit}} maxrepeat={{pwquality_maxrepeat}}"
     state: present
   when:
   - ansible_distribution_major_version == '11' or ansible_distribution_major_version == '12'
