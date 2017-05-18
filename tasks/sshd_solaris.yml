@@ -29,7 +29,7 @@
 - name: Avoid trying to modify inherited_fs
   command: touch /lib/svc/method/sshd
   register: touch_sshd
-  always_run: True
+  check_mode: no
   failed_when: touch_sshd.rc > 1
   changed_when: no
   args:

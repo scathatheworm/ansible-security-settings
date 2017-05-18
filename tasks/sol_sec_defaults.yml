@@ -38,6 +38,12 @@
   - ansible_container is not defined
   - disable_ctrlaltdel
 
+- name: Make sure dir to hold unlock script exists
+  file:
+    path: "{{ solaris_accountunlock_dir }}/bin"
+    state: directory
+    recurse: yes
+
 - name: Set accountunlock perl script
   template:
     src: accountunlock.j2
