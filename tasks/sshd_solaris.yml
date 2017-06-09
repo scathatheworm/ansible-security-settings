@@ -97,10 +97,10 @@
     mode: 0644
   notify: restart sshd
 
-- name: SSH disable weak ciphers Solaris 10
+- name: Configure Solaris SSH Ciphers
   lineinfile:
     dest: /etc/ssh/sshd_config
-    line: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
+    line: "Ciphers aes256-ctr,aes192-ctr,aes128-ctr{{ ',aes128-cbc,3des-cbc,blowfish-cbc,aes192-cbc,aes256-cbc' if cbc_ciphers_enabled else '' }}{{ ',arcfour' if rc4_ciphers_enabled else '' }}"
     regexp: '^Ciphers.*$'
     insertafter: '# Default Encryption algorithms and Message Authentication codes'
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
@@ -112,12 +112,21 @@
   - ansible_distribution_version == '10'
   notify: restart sshd
 
-- name: SSH disable weak HMACs Solaris 10
+- name: Get list of supported Solaris SSH MACs
+  shell: "strings `ps -efo comm | grep sshd | uniq` | grep ^hmac | grep -v , {{ '| grep -v sha1 ' if not sha1_mac_enabled else '' }}{{ '| grep -v md5 ' if not md5_mac_enabled else '' }}{{ '| grep -v 9' if not truncated_mac_enabled else '' }}"
+  args:
+    executable: /usr/bin/bash
+  register: supportedmacs
+  changed_when: false
+  check_mode: no
+
+- name: Configure Solaris SSH MACs
   lineinfile:
     dest: /etc/ssh/sshd_config
-    line: 'MACS    hmac-sha1'
-    insertafter: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
-    state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
+    line: "MACS    {{ supportedmacs.stdout_lines | join(',')  }}"
+    regexp: "^MACS.*"
+    insertafter: '^Ciphers.*'
+    state: "{{ 'present' if ( ssh_enforce_ciphers and supportedmacs.stdout != '') else 'absent' }}"
     owner: root
     group: sys
     mode: 0644

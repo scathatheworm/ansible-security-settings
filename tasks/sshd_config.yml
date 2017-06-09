@@ -64,10 +64,10 @@
     mode: 0640
   notify: restart sshd
 
-- name: SSH disable weak ciphers RHEL7/SLES12
+- name: Configure SSH Ciphers
   lineinfile:
     dest: /etc/ssh/sshd_config
-    line: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com'
+    line: "Ciphers {{ 'chacha20-poly1305@openssh.com,' if (((ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS') and ansible_distribution_major_version|int == 7) or (ansible_distribution == 'SLES' and ansible_distribution_major_version|int >= 11)) else '' }}{{ 'aes128-gcm@openssh.com,aes256-gcm@openssh.com' if (((ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS') and ansible_distribution_major_version|int >= 7) or (ansible_distribution == 'SLES' and ansible_distribution_major_version|int >= 12)) else '' }}aes256-ctr,aes192-ctr,aes128-ctr{{ ',aes128-cbc,3des-cbc,blowfish-cbc,cast128-cbc,aes192-cbc,aes256-cbc,rijndael-cbc@lysator.liu.se' if cbc_ciphers_enabled else '' }}{{ ',arcfour,arcfour128,arcfour256' if rc4_ciphers_enabled else '' }}"
     regexp: '^Ciphers.*$'
     insertafter: '# Ciphers and keying'
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
@@ -76,61 +76,45 @@
     mode: 0640
   when:
   - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
-  - ansible_distribution_major_version == '7' or ansible_distribution_major_version == '12'
   notify: restart sshd
 
-- name: SSH disable weak ciphers RHEL5/6/SLES10/11
+- name: Configure SSH HMACs For EL6 variants
   lineinfile:
     dest: /etc/ssh/sshd_config
-    line: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
-    regexp: '^Ciphers.*$'
+    line: "MACs hmac-sha2-512,hmac-sha2-256,hmac-ripemd160@openssh.com,hmac-ripemd160,umac-64@openssh.com{{ ',hmac-sha1' if sha1_mac_enabled else '' }}{{ ',hmac-md5' if md5_mac_enabled  else '' }}{{ ',hmac-sha1-96' if ( sha1_mac_enabled and truncated_mac_enabled ) else '' }}{{ ',hmac-md5-96' if ( md5_mac_enabled and truncated_mac_enabled ) else '' }}"
+    regexp: '^MACs.*'
+    insertafter: '^Ciphers.*'
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
     group: root
     mode: 0640
   when:
-  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
-  - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '6' or ansible_distribution_major_version == '10' or ansible_distribution_major_version == '11'
+  - ( ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' ) and ansible_distribution_major_version|int == 6
   notify: restart sshd
 
-- name: SSH disable weak HMACs RHEL7/SLES12
+- name: Configure SSH HMACs
   lineinfile:
     dest: /etc/ssh/sshd_config
-    line: 'MACs hmac-sha1-etm@openssh.com,umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-ripemd160-etm@openssh.com,hmac-sha1,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-ripemd160'
-    insertafter: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com'
+    line: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,umac-64-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,hmac-ripemd160@openssh.com,umac-128@openssh.com,umac-64@openssh.com{{ ',hmac-sha1-etm@openssh.com,hmac-sha1' if sha1_mac_enabled else '' }}{{ ',hmac-md5-etm@openssh.com,hmac-md5' if md5_mac_enabled  else '' }}{{ ',hmac-sha1-96-etm@openssh.com,hmac-sha1-96' if ( sha1_mac_enabled and truncated_mac_enabled ) else '' }}{{ ',hmac-md5-96-etm@openssh.com,hmac-md5-96' if ( md5_mac_enabled and truncated_mac_enabled ) else '' }}"
+    regexp: '^MACs.*'
+    insertafter: '^Ciphers.*'
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
     group: root
     mode: 0640
   when:
-  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
-  - ansible_distribution_major_version == '7' or ansible_distribution_major_version == '12'
-  notify: restart sshd
+  - ( ( ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' ) and ansible_distribution_major_version|int == 7 ) or ( ansible_distribution == 'SLES' and ansible_distribution_major_version|int >= 11 )
 
-- name: SSH disable weak HMACs RHEL6/SLES11
+- name: SSH configure HMACs for Legacy Enterprise Linux
   lineinfile:
     dest: /etc/ssh/sshd_config
-    line: 'MACs hmac-sha1,umac-64@openssh.com,hmac-ripemd160,hmac-sha2-256,hmac-sha2-512'
-    insertafter: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
+    line: "MACs hmac-ripemd160,hmac-ripemd160@openssh.com{{ ',hmac-sha1' if sha1_mac_enabled else '' }}{{ ',hmac-md5' if md5_mac_enabled else '' }}{{ ',hmac-sha1-96' if ( sha1_mac_enabled and truncated_mac_enabled ) else '' }}{{ ',hmac-md5-96' if ( md5_mac_enabled and truncated_mac_enabled ) else '' }}"
+    regexp: '^MACs.*'
+    insertafter: '^Ciphers.*'
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
     group: root
     mode: 0640
   when:
-  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
-  - ansible_distribution_major_version == '6' or ansible_distribution_major_version == '11'
-  notify: restart sshd
-
-- name: SSH disable weak HMACs RHEL5/SLES10
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    line: 'MACs hmac-sha1,hmac-ripemd160'
-    insertafter: 'Ciphers aes128-ctr,aes192-ctr,aes256-ctr'
-    state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
-    owner: root
-    group: root
-    mode: 0640
-  when:
-  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
-  - ansible_distribution_major_version == '5' or ansible_distribution_major_version == '10'
+  - ( ( ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' ) and ansible_distribution_major_version|int == 5 ) or ( ansible_distribution == 'SLES' and ansible_distribution_major_version|int == 10 )
   notify: restart sshd

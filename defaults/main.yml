@@ -25,4 +25,9 @@ solaris_disable_services: false
 disable_ctrlaltdel: True
 firewall_check: false
 inactive_lock: 0
-ssh_enforce_ciphers: True
+ssh_enforce_ciphers: true
+sha1_mac_enabled: true
+md5_mac_enabled: false
+truncated_mac_enabled: true
+cbc_ciphers_enabled: true
+rc4_ciphers_enabled: false

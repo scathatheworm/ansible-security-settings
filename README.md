@@ -48,3 +48,8 @@ Variables:
 | `firewall_check` | false | Configures if the role should check firewall setup |
 | `inactive_lock` | 0 | Number of days of inactivity for an account before it is locked, a value of 0 disables inactivity lockout |
 | `ssh_enforce_ciphers` | True | True to enforce strong ciphers and MACs in ssh, false to disable |
+| `sha1_mac_enabled` | True | Enable use of sha1 HMACs in ssh |
+| `md5_mac_enabled` | False | Enable use of md5 HMACs in ssh |
+| `truncated_mac_enabled` | True | Enable use of md5 or sha1 truncated 96bit HMACs in ssh |
+| `cbc_ciphers_enabled` | True | Enable use of Cipher Block Chaining mode ciphers in ssh |
+| `rc4_ciphers_enabled` | False | Enable use of arcfour ciphers in ssh |
