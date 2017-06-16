@@ -27,6 +27,12 @@
     regexp: '^LOCK_AFTER_RETRIES.*'
     line: 'LOCK_AFTER_RETRIES=YES'
 
+- name: Set strong hashing for passwords in Solaris 10
+  lineinfile:
+    dest: /etc/security/policy.conf
+    regexp: '^CRYPT_DEFAULT=.*'
+    line: 'CRYPT_DEFAULT=6'
+
 - name: Disable keyboard and serial physical sendbreak
   lineinfile:
     dest: /etc/default/kbd

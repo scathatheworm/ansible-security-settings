@@ -28,3 +28,26 @@
   when:
   - ansible_service_mgr == 'systemd'
   - ansible_virtualization_role is not defined or (ansible_virtualization_role is defined and ansible_virtualization_role != 'guest')
+
+- name: Configure Magic SysRq
+  lineinfile:
+    dest: /etc/sysctl.conf
+    regexp: '^kernel.sysrq =.*'
+    line: 'kernel.sysrq = {{ magic_sysrq }}'
+  when:
+  - ( ( ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' ) and ansible_distribution_major_version|int >= 5 ) or ( ansible_distribution == 'SLES' and ansible_distribution_major_version|int == 12 )
+  register: sysrq_1
+
+- name: Configure Magic SysRq for SLES11
+  lineinfile:
+    dest: /etc/sysconfig/sysctl
+    regexp: '^ENABLE_SYSRQ=.*'
+    line: 'ENABLE_SYSRQ={{ magic_sysrq }}'
+  when:
+  - ansible_distribution == 'SLES'
+  - ansible_distribution_major_version|int == 11 or ansible_distribution_major_version|int == 10
+  register: sysrq_2
+
+- name: Update current sysctl for Magic SysRq if needed
+  command: "/sbin/sysctl -w kernel.sysrq={{ magic_sysrq }}"
+  when: sysrq_1.changed or sysrq_2.changed
