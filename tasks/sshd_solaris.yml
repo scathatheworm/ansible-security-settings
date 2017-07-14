@@ -1,11 +1,55 @@
----
 - name: Add OS specific variables
   include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Use only SSH ver.2 protocol
+  lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: '^(#)?Protocol.*'
+    line: 'Protocol 2'
+    insertbefore: '^Match.*'
+  notify: restart sshd
+
+- name: Disallow empty passwords for SSH logins
+  lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: '^(#)?PermitEmptyPasswords.*'
+    line: 'PermitEmptyPasswords no'
+    insertbefore: '^Match.*'
+  notify: restart sshd
+
+- name: Disable SSH Host Based Authenthication
+  lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: '^(#)?HostbasedAuthentication.*'
+    line: 'HostbasedAuthentication no'
+    insertbefore: '^Match.*'
+  notify: restart sshd
+
+- name: SSH must ignore .rhosts
+  lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: '^(#)?IgnoreRhosts.*'
+    line: 'IgnoreRhosts yes'
+    insertbefore: '^Match.*'
+  notify: restart sshd
+
+- name: Configure TCP port Forwarding with ssh
+  lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: '^(#)?AllowTcpForwarding.*'
+    line: 'AllowTcpForwarding {{sshportforwarding}}'
+    insertbefore: '^Match.*'
+  notify: restart sshd
 
 - name: Solaris - Configure ssh root login to {{sshrootlogin}}
   lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: '^PermitRootLogin.*'
+    regexp: '^(#)?PermitRootLogin.*'
     line: 'PermitRootLogin {{sshrootlogin}}'
     insertafter: '^# Valid options are yes, without-password, no.*'
     state: present
@@ -90,6 +134,7 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     line: 'Banner /etc/issue'
+    regexp: '^(#)?Banner.*'
     insertafter: '# Banner to be printed before authentication starts.*'
     state: "{{ 'present' if setloginbanner else 'absent' }}"
     owner: root
@@ -101,7 +146,7 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     line: "Ciphers aes256-ctr,aes192-ctr,aes128-ctr{{ ',aes128-cbc,3des-cbc,blowfish-cbc,aes192-cbc,aes256-cbc' if cbc_ciphers_enabled else '' }}{{ ',arcfour' if rc4_ciphers_enabled else '' }}"
-    regexp: '^Ciphers.*$'
+    regexp: '^(#)?Ciphers.*$'
     insertafter: '# Default Encryption algorithms and Message Authentication codes'
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
@@ -124,7 +169,7 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     line: "MACS    {{ supportedmacs.stdout_lines | join(',')  }}"
-    regexp: "^MACS.*"
+    regexp: "^(#)?MACS.*"
     insertafter: '^Ciphers.*'
     state: "{{ 'present' if ( ssh_enforce_ciphers and supportedmacs.stdout != '') else 'absent' }}"
     owner: root

@@ -32,3 +32,4 @@ truncated_mac_enabled: true
 cbc_ciphers_enabled: true
 rc4_ciphers_enabled: false
 magic_sysrq: 1
+sshportforwarding: 'yes'

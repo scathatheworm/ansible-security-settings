@@ -34,6 +34,7 @@ Variables:
 | `pwquality_ocredit` | -1 | special chars that must be present in a password |
 | `passhistory` | 6 | number of password to remember to avoid reusage |
 | `sshrootlogin` | 'no' | allow ssh root login, keep single quotes to avoid boolean evaluation |
+ `sshportforwarding` | 'yes' | Configured options for port forwarding, values as in config file: yes, no, remote, local |
 | `sshmainport` | 22 | main ssh port |
 | `sshextraport` | 32 | secondary ssh port, set to 0 to disable an extra port |
 | `setloginbanner` | true | use a login banner in ssh |
@@ -53,3 +54,4 @@ Variables:
 | `truncated_mac_enabled` | True | Enable use of md5 or sha1 truncated 96bit HMACs in ssh |
 | `cbc_ciphers_enabled` | True | Enable use of Cipher Block Chaining mode ciphers in ssh |
 | `rc4_ciphers_enabled` | False | Enable use of arcfour ciphers in ssh |
+| `magic_sysrq` | 1 | Value of kernel.sysrq setting in Linux |

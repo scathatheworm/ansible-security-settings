@@ -2,12 +2,57 @@
 - name: Add OS specific variables
   include_vars: "{{ ansible_os_family }}.yml"
 
+- name: Use only SSH ver.2 protocol
+  lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: '^(#)?Protocol.*'
+    line: 'Protocol 2'
+    insertbefore: '^Match.*'
+  notify: restart sshd
+
+- name: Disallow empty passwords for SSH logins
+  lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: '^(#)?PermitEmptyPasswords.*'
+    line: 'PermitEmptyPasswords no'
+    insertbefore: '^Match.*'
+  notify: restart sshd
+
+- name: Disable SSH Host Based Authenthication
+  lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: '^(#)?HostbasedAuthentication.*'
+    line: 'HostbasedAuthentication no'
+    insertbefore: '^Match.*'
+  notify: restart sshd
+
+- name: SSH must ignore .rhosts
+  lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: '^(#)?IgnoreRhosts.*'
+    line: 'IgnoreRhosts yes'
+    insertbefore: '^Match.*'
+  notify: restart sshd
+
+- name: Configure TCP port Forwarding with ssh
+  lineinfile:
+    state: present
+    dest: /etc/ssh/sshd_config
+    regexp: '^(#)?AllowTcpForwarding.*'
+    line: 'AllowTcpForwarding {{sshportforwarding}}'
+    insertbefore: '^Match.*'
+  notify: restart sshd
+
 - name: Configure ssh root login to {{sshrootlogin}}
   lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: '^PermitRootLogin.*'
+    regexp: '^(#)?PermitRootLogin.*'
     line: 'PermitRootLogin {{sshrootlogin}}'
-    insertafter: '^#*LoginGraceTime'
+    insertbefore: '^Match.*'
     state: present
     owner: root
     group: root
@@ -55,7 +100,7 @@
 - name: Configure login banner in ssh
   lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: '^Banner.*$'
+    regexp: '^(#)?Banner.*$'
     line: 'Banner /etc/login_banner'
     insertafter: '# no default banner path'
     state: "{{ 'present' if setloginbanner else 'absent' }}"
@@ -68,8 +113,8 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     line: "Ciphers {{ 'chacha20-poly1305@openssh.com,' if (((ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS') and ansible_distribution_major_version|int == 7) or (ansible_distribution == 'SLES' and ansible_distribution_major_version|int >= 11)) else '' }}{{ 'aes128-gcm@openssh.com,aes256-gcm@openssh.com,' if (((ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS') and ansible_distribution_major_version|int >= 7) or (ansible_distribution == 'SLES' and ansible_distribution_major_version|int >= 12)) else '' }}aes256-ctr,aes192-ctr,aes128-ctr{{ ',aes128-cbc,3des-cbc,blowfish-cbc,cast128-cbc,aes192-cbc,aes256-cbc,rijndael-cbc@lysator.liu.se' if cbc_ciphers_enabled else '' }}{{ ',arcfour,arcfour128,arcfour256' if rc4_ciphers_enabled else '' }}"
-    regexp: '^Ciphers.*$'
-    insertafter: '# Ciphers and keying'
+    regexp: '^(#)?Ciphers.*$'
+    insertbefore: '^Match.*'
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
     group: root
@@ -82,7 +127,7 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     line: "MACs hmac-sha2-512,hmac-sha2-256,hmac-ripemd160@openssh.com,hmac-ripemd160,umac-64@openssh.com{{ ',hmac-sha1' if sha1_mac_enabled else '' }}{{ ',hmac-md5' if md5_mac_enabled  else '' }}{{ ',hmac-sha1-96' if ( sha1_mac_enabled and truncated_mac_enabled ) else '' }}{{ ',hmac-md5-96' if ( md5_mac_enabled and truncated_mac_enabled ) else '' }}"
-    regexp: '^MACs.*'
+    regexp: '^(#)?MACs.*'
     insertafter: '^Ciphers.*'
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
@@ -96,7 +141,7 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     line: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,umac-64-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,hmac-ripemd160@openssh.com,umac-128@openssh.com,umac-64@openssh.com{{ ',hmac-sha1-etm@openssh.com,hmac-sha1' if sha1_mac_enabled else '' }}{{ ',hmac-md5-etm@openssh.com,hmac-md5' if md5_mac_enabled  else '' }}{{ ',hmac-sha1-96-etm@openssh.com,hmac-sha1-96' if ( sha1_mac_enabled and truncated_mac_enabled ) else '' }}{{ ',hmac-md5-96-etm@openssh.com,hmac-md5-96' if ( md5_mac_enabled and truncated_mac_enabled ) else '' }}"
-    regexp: '^MACs.*'
+    regexp: '^(#)?MACs.*'
     insertafter: '^Ciphers.*'
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
@@ -109,7 +154,7 @@
   lineinfile:
     dest: /etc/ssh/sshd_config
     line: "MACs hmac-ripemd160,hmac-ripemd160@openssh.com{{ ',hmac-sha1' if sha1_mac_enabled else '' }}{{ ',hmac-md5' if md5_mac_enabled else '' }}{{ ',hmac-sha1-96' if ( sha1_mac_enabled and truncated_mac_enabled ) else '' }}{{ ',hmac-md5-96' if ( md5_mac_enabled and truncated_mac_enabled ) else '' }}"
-    regexp: '^MACs.*'
+    regexp: '^(#)?MACs.*'
     insertafter: '^Ciphers.*'
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
