@@ -1,0 +1,43 @@
+---
+- name: Ensure audit daemon is installed
+  package:
+    name: audit
+    state: present
+
+- name: Configure maximum audit log filesize
+  lineinfile:
+    dest: /etc/audit/auditd.conf
+    regexp: "^(#)?max_log_file(?!_action)"
+    line: "max_log_file = {{ auditd_max_log_filesize }}"
+    state: present
+  notify: restart audit daemon
+
+- name: Configure audit log rotation
+  lineinfile:
+    dest: /etc/audit/auditd.conf
+    regexp: "^(#)?max_log_file_action =.*"
+    line: "max_log_file_action = ROTATE"
+    state: present
+  notify: restart audit daemon
+
+- name: Configure audit log rotation files to keep
+  lineinfile:
+    dest: /etc/audit/auditd.conf
+    regexp: "^(#)?num_logs ="
+    line: "num_logs = {{ auditd_num_logs }}"
+  notify: restart audit daemon
+
+- name: Configure audit rules
+  template:
+    src: audit.rules.j2
+    dest: /etc/audit/audit.rules
+    owner: root
+    group: root
+    mode: 0640
+  notify: restart audit daemon
+
+- name: Configure auditd service
+  service:
+    name: auditd
+    state: started
+    enabled: true

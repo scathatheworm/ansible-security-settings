@@ -145,7 +145,7 @@
 - name: Configure Solaris SSH Ciphers
   lineinfile:
     dest: /etc/ssh/sshd_config
-    line: "Ciphers aes256-ctr,aes192-ctr,aes128-ctr{{ ',aes128-cbc,3des-cbc,blowfish-cbc,aes192-cbc,aes256-cbc' if cbc_ciphers_enabled else '' }}{{ ',arcfour' if rc4_ciphers_enabled else '' }}"
+    line: "Ciphers aes256-ctr,aes192-ctr,aes128-ctr{{ ',aes128-cbc,3des-cbc,blowfish-cbc,aes192-cbc,aes256-cbc' if ( cbc_ciphers_enabled and sweet32_ciphers_enabled ) else ',aes128-cbc,aes192-cbc,aes256-cbc' if ( cbc_ciphers_enabled and not sweet32_ciphers_enabled ) else '' }}{{ ',arcfour' if rc4_ciphers_enabled else '' }}"
     regexp: '^(#)?Ciphers.*$'
     insertafter: '# Default Encryption algorithms and Message Authentication codes'
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"

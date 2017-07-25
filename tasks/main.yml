@@ -1,18 +1,18 @@
 ---
 - include: login_defs.yml
-  when: ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
   tags: login_defs
 
 - include: pam_el.yml
   tags: pam
-  when: ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS'
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS'
 
 - include: pam_sles.yml
   when: ansible_distribution == 'SLES'
   tags: pam
 
 - include: sshd_config.yml
-  when: ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
   tags: sshd_config
 
 - include: sol_sec_defaults.yml
@@ -34,14 +34,14 @@
   - ansible_distribution_version == '10'
 
 - include: selinux.yml
-  when: ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
   tags: selinux
 
 - include: firewall_el.yml
   tags: firewall
   when:
   - firewall_check
-  - ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS'
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS'
 
 - include: firewall_sles.yml
   tags: firewall
@@ -57,3 +57,9 @@
   when:
   - disable_ctrlaltdel
   - ansible_system == 'Linux'
+
+- include: audit.yml
+  tags: audit
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
+  - auditd_configure

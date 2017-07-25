@@ -12,46 +12,86 @@ Configures:
 * pam tally and faillock modules for automated account lockout on failures
 * password history for no reuse
 * password complexity
-* ssh port, rootlogin, banner settings
+* ssh port, rootlogin, banner, cipher, port forwarding settings
 * selinux and firewall state
 * shell timeout
 * physical sendbreak and ctrl-alt-del disabling
+* Linux auditd configuration
+* firewall status
+* Magic SysRq configuration
 
-Variables:
+Password and account related variables:
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
 | `os_auth_pw_max_age` | 60 | Max days a password is valid before requiring a change |
 | `os_auth_pw_min_age` | 10 | Min days of age a password must have before it can be changed |
 | `os_auth_pw_warn_age` | 7 | Days before password expires that account will be warned |
-| `fail_deny` | 5 | Amount of times failed password can be tried before locking the account |
-| `fail_unlock` | 300 | Seconds that must pass before account is unlocked after failed logins, if set to 0 auto-unlock is disabled and accounts will remain locked |
+| `fail_deny` | 5 | Amount of times failed passwords can be tried before locking the account |
+| `fail_unlock` | 300 | Seconds elapsed before account is unlocked after failed logins, if set to 0 auto-unlock is disabled and passwords will remain locked |
 | `pwquality_minlen` | 8 | Minimum password length in characters |
 | `pwquality_maxrepeat` | 3 | Maximum amount of same characters repeated in password |
-| `pwquality_lcredit` | -1 | lowercase amount of chars that must be present in password |
-| `pwquality_ucredit` | -1 | uppercase amount of chars that must be present in password |
-| `pwquality_dcredit` | -1 | digits that must be present in password | 
-| `pwquality_ocredit` | -1 | special chars that must be present in a password |
-| `passhistory` | 6 | number of password to remember to avoid reusage |
-| `sshrootlogin` | 'no' | allow ssh root login, keep single quotes to avoid boolean evaluation |
- `sshportforwarding` | 'yes' | Configured options for port forwarding, values as in config file: yes, no, remote, local |
-| `sshmainport` | 22 | main ssh port |
-| `sshextraport` | 32 | secondary ssh port, set to 0 to disable an extra port |
-| `setloginbanner` | true | use a login banner in ssh |
+| `pwquality_lcredit` | -1 | lowercase amount of chars that must be present in password, for 2 use '-2' and so on |
+| `pwquality_ucredit` | -1 | uppercase amount of chars that must be present in password , for 2 use '-2' and so on |
+| `pwquality_dcredit` | -1 | digits that must be present in password, for 2 use '-2' and so on |
+| `pwquality_ocredit` | -1 | special chars that must be present in a password, for 2 use '-2' and so on |
+| `solaris_dictionary_minwordlength` | 5 | Solaris minimum dictionary word length |
+| `passhistory` | 6 | number of passwords to remember to avoid reusage |
+| `inactive_lock` | 0 | Number of days an account can be inactive before it is locked, a value of 0 disables inactivity lockout |
+
+
+System services and settings variables:
+
+| Name           | Default Value | Description                        |
+| -------------- | ------------- | -----------------------------------|
 | `selinux_state` | permissive | selinux configuration value |
+| `firewall_check` | false | Configures if the role should check firewall setup |
 | `firewall_state` | stopped | Firewall desired status |
 | `firewall_enable` |'no' | Desired firewall configuration status |
 | `shell_timeout` | 0 | desired shell timeout in seconds, set 0 to disable |
-| `sshd_solaris_restrict_ipv4` | True | Restrict ssh connections to ipv4 in solaris as workaround for DISPLAY issues |
-| `solaris_dictionary_minwordlength` | 5 | Solaris minimum dictionary word length |
 | `disable_ctrlaltdel` | True | Whether to disable Control-Alt-Del and physical sendbreak in Solaris |
 | `solaris_disable_services` | false | Disable unsafe solaris services |
-| `firewall_check` | false | Configures if the role should check firewall setup |
-| `inactive_lock` | 0 | Number of days of inactivity for an account before it is locked, a value of 0 disables inactivity lockout |
-| `ssh_enforce_ciphers` | True | True to enforce strong ciphers and MACs in ssh, false to disable |
-| `sha1_mac_enabled` | True | Enable use of sha1 HMACs in ssh |
-| `md5_mac_enabled` | False | Enable use of md5 HMACs in ssh |
-| `truncated_mac_enabled` | True | Enable use of md5 or sha1 truncated 96bit HMACs in ssh |
-| `cbc_ciphers_enabled` | True | Enable use of Cipher Block Chaining mode ciphers in ssh |
-| `rc4_ciphers_enabled` | False | Enable use of arcfour ciphers in ssh |
-| `magic_sysrq` | 1 | Value of kernel.sysrq setting in Linux |
+| `magic_sysrq` | 1 | Value of kernel.sysrq setting in Linux, as accepted by the Linux kernel |
+
+
+SSH configuration variables:
+
+| Name           | Default Value | Description                        |
+| -------------- | ------------- | -----------------------------------|
+| `sshrootlogin` | 'no' | allow ssh root login, keep single quotes to avoid boolean evaluation |
+| `sshportforwarding` | 'yes' | Configured options for port forwarding, values as in config file: yes, no, remote, local |
+| `sshmainport` | 22 | main ssh port |
+| `sshextraport` | 32 | secondary ssh port, set to 0 to disable an extra port |
+| `setloginbanner` | true | use a login banner in ssh |
+| `ssh_enforce_ciphers` | True | True to enforce strong ciphers and MACs in ssh, false to disable and allow all supported MACs and Ciphers |
+| `sha1_mac_enabled` | True | Enable use of sha1 HMACs in ssh, theoretical attack vectors exist |
+| `md5_mac_enabled` | False | Enable use of md5 HMACs in ssh, known vulnerabilies and attack vectors exist |
+| `truncated_mac_enabled` | True | Enable use of md5 or sha1 truncated 96bit HMACs in ssh, shorter subsets of md5 and sha1 |
+| `cbc_ciphers_enabled` | True | Enable use of Cipher Block Chaining mode ciphers in ssh, considered vulnerable to several Padding on Oracle attacks |
+| `sweet32_ciphers_enabled` | False | Enable use of 64bit Cipher Block Chaining mode ciphers in ssh, considered vulnerable to SWEET32 attack |
+| `rc4_ciphers_enabled` | False | Enable use of arcfour ciphers in ssh, considered vulnerable with practical attacks in existance |
+| `sshd_solaris_restrict_ipv4` | True | Restrict ssh connections to ipv4 in solaris as workaround for DISPLAY issues |
+
+
+Audit configuration variables:
+
+| Name           | Default Value | Description                        |
+| -------------- | ------------- | -----------------------------------|
+| `auditd_configure:` | true | Enable auditd configuration management |
+| `auditd_max_log_filesize` | 25 | Audit max log filesize in MB |
+| `auditd_num_logs` | 8 | Max number of audit logs to keep |
+| `security_audit_datetime_changes` | true | auditd will track all date or time modifications |
+| `security_audit_account_modifications` | true | auditd will track all account modifications |
+| `security_audit_network_changes` | true | auditd will track all network config modifications |
+| `security_audit_selinux_changes` | true | auditd will track changes to selinux configurations |
+| `security_audit_permission_changes` | false | auditd will track all file permission changes |
+| `security_audit_fileaccess_failedattempts` | false | auditd will track all unauthorized access attempts to files |
+| `security_audit_filesystem_mounts` | true | auditd will track all mount/unmount of filesystems }
+| `security_audit_deletions` | false | auditd will track all file deletions |
+| `security_audit_sudoers` | true | auditd will track all modification to sudoers rules |
+| `security_audit_kernel_modules` | false | auditd will track all module operations as well as sysctl configurations |
+| `security_audit_logon` | true | auditd will track all login/logout/sessions |
+| `security_audit_elevated_privilege_commands` | true | auditd will track all elevated privilege commands |
+| `security_audit_all_commands` | false | auditd will track ALL commands |
+| `security_audit_log_integrity` | false | auditd will monitor integrity of logs and logging configuration |
+| `security_audit_configuration_immutable` | false | auditd will make its rules immutable, a reboot will be needed to make changes |

@@ -3,4 +3,10 @@
   service:
     name: "{{ ssh_service_name }}"
     state: restarted
-    enabled: yes
+    enabled: true
+
+- name: restart audit daemon
+  service:
+    name: auditd
+    state: restarted
+    enabled: true

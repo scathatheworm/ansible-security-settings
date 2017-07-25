@@ -1,0 +1,150 @@
+# {{ ansible_managed }}
+
+# Delete all existing auditd rules prior to loading this ruleset.
+-D
+
+# Increase the buffers to survive stress events.
+-b 320
+
+{% if security_audit_datetime_changes %}
+# Ensure auditd collects date-time-timezone changes
+-a always,exit -F arch=b32 -S clock_settime -S adjtimex -S settimeofday -k datetime_changes
+-a always,exit -F arch=b64 -S clock_settime -S adjtimex -S settimeofday -k datetime_changes
+-w /etc/localtime -p wa -k audit_datetime_changes
+{% endif %}
+
+{% if security_audit_account_modifications %}
+# Ensure auditd collects access control modifications
+-w /etc/group -p wa -k account_modifications
+-w /etc/passwd -p wa -k account_modifications
+-w /etc/gshadow -p wa -k account_modifications
+-w /etc/shadow -p wa -k account_modifications
+-w /etc/security/opasswd -p wa -k account_modifications
+-w /etc/nsswitch.conf -p wa -k account_modifications
+-w /etc/pam.d -p wa -k account_modifications
+{% endif %}
+
+{% if security_audit_network_changes %}
+# Ensure auditd collects network config modifications
+-a always,exit -F arch=b32 -S sethostname -S setdomainname -k network_changes
+-a always,exit -F arch=b64 -S sethostname -S setdomainname -k network_changes
+-w /etc/issue -p wa -k network_changes
+-w /etc/issue.net -p wa -k network_changes
+-w /etc/hosts -p wa -k network_changes
+-w /etc/resolv.conf -p wa -k network_changes
+-w /etc/hosts.allow -p wa -k network_changes
+-w /etc/hosts.deny -p wa -k network_changes
+-w /etc/ssh/sshd_config -p wa -k network_changes
+{% if ansible_os_family == "RedHat" %}
+-w /etc/sysconfig/network -p wa -k network_changes
+-w /etc/sysconfig/network-scripts/ -p wa -k network_changes
+-w /etc/hostname -p wa -k network_changes
+{% elif ansible_os_family == "Debian" %}
+-w /etc/network/ -p wa -k network_changes
+-w /etc/hostname -p wa -k network_changes
+{% elif ansible_os_family == "Suse" %}
+-w /etc/sysconfig/network/ -p wa -k network_changes
+-w /etc/HOSTNAME -p wa -k network_changes
+{% endif %}
+{% endif %}
+
+{% if ansible_selinux is defined and ansible_selinux and security_audit_selinux_changes %}
+# Ensure auditd collects modifications to selinux
+-w /etc/selinux/ -p wa -k selinux_changes
+{% endif %}
+
+{% if security_audit_permission_changes %}
+# Ensure auditd Collects Discretionary Access Control Permission Modification Events
+-a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k permission_changes
+-a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k permission_changes
+-a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k permission_changes
+-a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k permission_changes
+-a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k permission_changes
+-a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k permission_changes
+{% endif %}
+
+{% if security_audit_fileaccess_failedattempts %}
+# Ensure auditd collects unauthorized access attempts to files
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k fileaccess_failedattempts
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k fileaccess_failedattempts
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid=0 -k fileaccess_failedattempts
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid=0 -k fileaccess_failedattempts
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k fileaccess_failedattempts
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k fileaccess_failedattempts
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid=0 -k fileaccess_failedattempts
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid=0 -k fileaccess_failedattempts
+{% endif %}
+
+{% if security_audit_filesystem_mounts %}
+# Ensure auditd Collects Information on Exporting to Media
+-a always,exit -F arch=b32 -S mount -F auid>=500 -F auid!=4294967295 -k filesystem_mounts
+-a always,exit -F arch=b32 -S mount -F auid=0 -k filesystem_mounts
+-a always,exit -F arch=b64 -S mount -F auid>=500 -F auid!=4294967295 -k filesystem_mounts
+-a always,exit -F arch=b64 -S mount -F auid=0 -k filesystem_mounts
+{% endif %}
+
+{% if security_audit_deletions %}
+# Ensure auditd Collects Files Deletion Events by User
+-a always,exit -F arch=b32 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k deletions
+-a always,exit -F arch=b32 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid=0 -k deletions
+-a always,exit -F arch=b64 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k deletions
+-a always,exit -F arch=b64 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid=0 -k deletions
+{% endif %}
+
+{% if security_audit_sudoers %}
+# Ensure auditd collects modifications to sudoers configuration
+-a always,exit -F path=/usr/sbin/visudo -F perm=x -F auid>=500 -F auid!=4294967295 -k sudoers
+-w /etc/sudoers -p wa -k sudoers
+-w /etc/sudoers.d/ -p wa -k sudoers
+{% endif %}
+
+{% if security_audit_kernel_modules %}
+# Ensure auditd collects kernel module operations
+-w /sbin/insmod -p x -k kernel_modules
+-w /sbin/rmmod -p x -k kernel_modules
+-w /sbin/modprobe -p x -k kernel_modules
+-a always,exit -F arch=b32 -S init_module -S delete_module -k kernel_modules
+-a always,exit -F arch=b64 -S init_module -S delete_module -k kernel_modules
+-w /etc/modprobe.d -k kernel_modules
+-w /etc/sysctl.conf -k kernel_modules
+-w /etc/sysctl.d -k kernel_modules
+{% endif %}
+
+{% if security_audit_logon %}
+# Ensure auditd Collects Logon, Logout and Session Events
+-w /var/log/faillog -p wa -k logon
+-w /var/log/lastlog -p wa -k logon
+-w /var/run/utmp -p wa -k logon
+-w /var/log/btmp -p wa -k logon
+-w /var/log/wtmp -p wa -k logon
+{% endif %}
+
+{% if security_audit_elevated_privilege_commands %}
+# Ensure auditd collects all elevated privilege commands
+-a exit,always -F arch=b32 -F euid=0 -S execve -k elevated_privilege_commands
+-a exit,always -F arch=b64 -F euid=0 -S execve -k elevated_privilege_commands
+-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k elevated_privilege_commands
+-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k elevated_privilege_commands
+{% endif %}
+
+{% if security_audit_all_commands %}
+# Ensure auditd collects all commands
+-a exit,always -F arch=b64 -S execve -k all_commands
+-a exit,always -F arch=b32 -S execve -k all_commands
+{% endif %}
+
+{% if security_audit_log_integrity %}
+# Ensure auditd monitors log file integrity and configuration
+-w /var/log/ -p wa -k log_integrity
+-w /etc/rsyslog.conf -p wa -k log_integrity
+-w /etc/rsyslog.d/ -p wa -k log_integrity
+-w /etc/syslog-ng.conf -p wa -k log_integrity
+-w /etc/syslog.conf -p wa -k log_integrity
+-w /etc/audit/ -p wa -k log_integrity
+-w /etc/audisp/ -p wa -k log_integrity
+{% endif %}
+
+{% if security_audit_configuration_immutable %}
+# Make the auditd Configuration Immutable
+-e 2
+{% endif %}
