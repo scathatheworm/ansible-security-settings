@@ -123,8 +123,6 @@
 # Ensure auditd collects all elevated privilege commands
 -a exit,always -F arch=b32 -F euid=0 -S execve -k elevated_privilege_commands
 -a exit,always -F arch=b64 -F euid=0 -S execve -k elevated_privilege_commands
--a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k elevated_privilege_commands
--a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k elevated_privilege_commands
 {% endif %}
 
 {% if security_audit_all_commands %}
