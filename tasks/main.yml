@@ -61,5 +61,5 @@
 - include: audit.yml
   tags: audit
   when:
-  - ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS' or ( ansible_distribution == 'SLES' and ansible_distribution_major_version|int >= 11)
   - auditd_configure

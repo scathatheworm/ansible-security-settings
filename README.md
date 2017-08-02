@@ -9,8 +9,8 @@ This role configures several security settings across login, password management
 
 Configures:
 
-* pam tally and faillock modules for automated account lockout on failures
-* password history for no reuse
+* pam tally and faillock modules for automated account lockout on login failures
+* password history
 * password complexity
 * ssh port, rootlogin, banner, cipher, port forwarding settings
 * selinux and firewall state
@@ -20,15 +20,21 @@ Configures:
 * firewall status
 * Magic SysRq configuration
 
-Password and account related variables:
+
+#Password aging variables:
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
 | `os_auth_pw_max_age` | 60 | Max days a password is valid before requiring a change |
 | `os_auth_pw_min_age` | 10 | Min days of age a password must have before it can be changed |
 | `os_auth_pw_warn_age` | 7 | Days before password expires that account will be warned |
-| `fail_deny` | 5 | Amount of times failed passwords can be tried before locking the account |
-| `fail_unlock` | 300 | Seconds elapsed before account is unlocked after failed logins, if set to 0 auto-unlock is disabled and passwords will remain locked |
+| `passhistory` | 6 | number of passwords to remember to avoid reusage |
+
+
+#Password complexity variables:
+
+| Name           | Default Value | Description                        |
+| -------------- | ------------- | -----------------------------------|
 | `pwquality_minlen` | 8 | Minimum password length in characters |
 | `pwquality_maxrepeat` | 3 | Maximum amount of same characters repeated in password |
 | `pwquality_lcredit` | -1 | lowercase amount of chars that must be present in password, for 2 use '-2' and so on |
@@ -36,11 +42,19 @@ Password and account related variables:
 | `pwquality_dcredit` | -1 | digits that must be present in password, for 2 use '-2' and so on |
 | `pwquality_ocredit` | -1 | special chars that must be present in a password, for 2 use '-2' and so on |
 | `solaris_dictionary_minwordlength` | 5 | Solaris minimum dictionary word length |
-| `passhistory` | 6 | number of passwords to remember to avoid reusage |
+
+
+#Account inactivity and failed login variables:
+
+| Name           | Default Value | Description                        |
+| -------------- | ------------- | -----------------------------------|
+| `fail_deny` | 5 | Amount of times failed passwords can be tried before locking the account |
+| `fail_unlock` | 0 | Seconds elapsed before account is unlocked after failed logins, if set to 0 auto-unlock is disabled and passwords will remain locked |
 | `inactive_lock` | 0 | Number of days an account can be inactive before it is locked, a value of 0 disables inactivity lockout |
+| `shell_timeout` | 900 | desired shell timeout in seconds, set 0 to disable |
 
 
-System services and settings variables:
+#System services and settings variables:
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
@@ -48,32 +62,33 @@ System services and settings variables:
 | `firewall_check` | false | Configures if the role should check firewall setup |
 | `firewall_state` | stopped | Firewall desired status |
 | `firewall_enable` |'no' | Desired firewall configuration status |
-| `shell_timeout` | 0 | desired shell timeout in seconds, set 0 to disable |
 | `disable_ctrlaltdel` | True | Whether to disable Control-Alt-Del and physical sendbreak in Solaris |
 | `solaris_disable_services` | false | Disable unsafe solaris services |
 | `magic_sysrq` | 1 | Value of kernel.sysrq setting in Linux, as accepted by the Linux kernel |
 
 
-SSH configuration variables:
+#SSH configuration variables:
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
 | `sshrootlogin` | 'no' | allow ssh root login, keep single quotes to avoid boolean evaluation |
-| `sshportforwarding` | 'yes' | Configured options for port forwarding, values as in config file: yes, no, remote, local |
+| `sshportforwarding` | 'no' | Configured options for port forwarding, values as in config file: yes, no, remote, local |
 | `sshmainport` | 22 | main ssh port |
-| `sshextraport` | 32 | secondary ssh port, set to 0 to disable an extra port |
+| `sshextraport` | 0 | secondary ssh port, set to 0 to disable an extra port |
 | `setloginbanner` | true | use a login banner in ssh |
-| `ssh_enforce_ciphers` | True | True to enforce strong ciphers and MACs in ssh, false to disable and allow all supported MACs and Ciphers |
-| `sha1_mac_enabled` | True | Enable use of sha1 HMACs in ssh, theoretical attack vectors exist |
-| `md5_mac_enabled` | False | Enable use of md5 HMACs in ssh, known vulnerabilies and attack vectors exist |
-| `truncated_mac_enabled` | True | Enable use of md5 or sha1 truncated 96bit HMACs in ssh, shorter subsets of md5 and sha1 |
-| `cbc_ciphers_enabled` | True | Enable use of Cipher Block Chaining mode ciphers in ssh, considered vulnerable to several Padding on Oracle attacks |
+| `sshd_solaris_restrict_ipv4` | True | Restrict ssh connections to ipv4 in solaris as workaround for DISPLAY issues |
+| `ssh_enforce_ciphers` | True | Enforce strong ciphers and MACs in ssh, false to disable and allow all supported MACs and Ciphers |
+| `sha1_mac_enabled` | False | Disable use of sha1 HMACs in ssh, theoretical attack vectors exist |
+| `md5_mac_enabled` | False | Disable use of md5 HMACs in ssh, known vulnerabilies and attack vectors exist |
+| `truncated_mac_enabled` | False | Disable use of md5 or sha1 truncated 96bit HMACs in ssh, shorter subsets of md5 and sha1 |
+| `cbc_ciphers_enabled` | False | Disable use of Cipher Block Chaining mode ciphers in ssh, considered vulnerable to several Padding on Oracle attacks |
 | `sweet32_ciphers_enabled` | False | Enable use of 64bit Cipher Block Chaining mode ciphers in ssh, considered vulnerable to SWEET32 attack |
 | `rc4_ciphers_enabled` | False | Enable use of arcfour ciphers in ssh, considered vulnerable with practical attacks in existance |
-| `sshd_solaris_restrict_ipv4` | True | Restrict ssh connections to ipv4 in solaris as workaround for DISPLAY issues |
+| `nist_curves_enabled` | false | Disable NIST KEX curve cryptography since they are weak in several aspects |
+| `logjam_sha1_enabled` | false | Disable SHA1 KEX algorithms, vulnerable to logjam attacks |
 
 
-Audit configuration variables:
+#Audit configuration variables:
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|

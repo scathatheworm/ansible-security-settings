@@ -1,39 +1,52 @@
+# Password aging settings
 os_auth_pw_max_age: 60
 os_auth_pw_min_age: 10
 os_auth_pw_warn_age: 7
+passhistory: 6
+
+# Inactivity and Failed attempts lockout settings
 fail_deny: 5
-fail_unlock: 300
+fail_unlock: 0
+inactive_lock: 0
+shell_timeout: 900
+solaris_accountunlock_dir: /usr/local
+
+# Password complexity settings
 pwquality_minlen: 8
 pwquality_maxrepeat: 3
 pwquality_lcredit: -1
 pwquality_ucredit: -1
 pwquality_dcredit: -1
 pwquality_ocredit: -1
-passhistory: 6
+solaris_dictionary_minwordlength: 5
+
+# SSH settings
 sshrootlogin: 'no'
 sshmainport: 22
-sshextraport: 32
+sshextraport: 0
+sshportforwarding: 'no'
+sshd_solaris_restrict_ipv4: True
 setloginbanner: true
+ssh_enforce_ciphers: true
+sha1_mac_enabled: false
+md5_mac_enabled: false
+truncated_mac_enabled: false
+cbc_ciphers_enabled: false
+sweet32_ciphers_enabled: false
+rc4_ciphers_enabled: false
+nist_curves_enabled: false
+logjam_sha1_enabled: false
+
+# Service and System settings
 selinux_state: permissive
 firewall_state: stopped
 firewall_enable: 'no'
-shell_timeout: 0
-sshd_solaris_restrict_ipv4: True
-solaris_dictionary_minwordlength: 5
-solaris_accountunlock_dir: /usr/local
 solaris_disable_services: false
 disable_ctrlaltdel: True
 firewall_check: false
-inactive_lock: 0
-ssh_enforce_ciphers: true
-sha1_mac_enabled: true
-md5_mac_enabled: false
-truncated_mac_enabled: true
-cbc_ciphers_enabled: true
-sweet32_ciphers_enabled: false
-rc4_ciphers_enabled: false
 magic_sysrq: 1
-sshportforwarding: 'yes'
+
+# Auditd configuration
 auditd_configure: true
 security_audit_datetime_changes: true
 security_audit_account_modifications: true

@@ -109,12 +109,39 @@
     mode: 0640
   notify: restart sshd
 
+- name: Add Crypt settings marker in ssh config file
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    insertbefore: '^Match.*'
+    line: '# Ansible Managed Key Exchange algorithms, encryption ciphers, and message authenthication code hashing functions'
+    state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
+    owner: root
+    group: root
+    mode: 0640
+  when:
+  - ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS' or ansible_distribution == 'SLES'
+  notify: restart sshd
+
+- name: Configure SSH Key Exchange Algorithms
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    insertafter: '# Ansible Managed Key Exchange algorithms, encryption ciphers, and message authenthication code hashing functions'
+    line: "KexAlgorithms {{ 'curve25519-sha256@libssh.org,' if (((ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS') and ansible_distribution_major_version|int == 7) or (ansible_distribution == 'SLES' and ansible_distribution_major_version|int >= 11)) else '' }}diffie-hellman-group-exchange-sha256{{ ',ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256' if ( nist_curves_enabled and (((ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS') and ansible_distribution_major_version|int >= 7) or (ansible_distribution == 'SLES' and ansible_distribution_major_version|int >= 11))) else '' }}{{ ',diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1' if logjam_sha1_enabled else '' }}"
+    regexp: '^(#)?KexAlgorithms.*$'
+    state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
+    owner: root
+    group: root
+    mode: 0640
+  when:
+  - ( ( ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS' ) and ansible_distribution_major_version|int > 5 ) or ( ansible_distribution == 'SLES' and ansible_distribution_major_version|int > 10 )
+  notify: restart sshd
+
 - name: Configure SSH Ciphers
   lineinfile:
     dest: /etc/ssh/sshd_config
     line: "Ciphers {{ 'chacha20-poly1305@openssh.com,' if (((ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS') and ansible_distribution_major_version|int == 7) or (ansible_distribution == 'SLES' and ansible_distribution_major_version|int >= 11)) else '' }}{{ 'aes128-gcm@openssh.com,aes256-gcm@openssh.com,' if (((ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux' or ansible_distribution == 'CentOS') and ansible_distribution_major_version|int >= 7) or (ansible_distribution == 'SLES' and ansible_distribution_major_version|int >= 12)) else '' }}aes256-ctr,aes192-ctr,aes128-ctr{{ ',aes128-cbc,3des-cbc,blowfish-cbc,cast128-cbc,aes192-cbc,aes256-cbc,rijndael-cbc@lysator.liu.se' if ( cbc_ciphers_enabled and sweet32_ciphers_enabled ) else ',aes128-cbc,cast128-cbc,aes192-cbc,aes256-cbc,rijndael-cbc@lysator.liu.se' if ( cbc_ciphers_enabled and not sweet32_ciphers_enabled ) else '' }}{{ ',arcfour,arcfour128,arcfour256' if rc4_ciphers_enabled else '' }}"
     regexp: '^(#)?Ciphers.*$'
-    insertbefore: '^Match.*'
+    insertafter: '^KexAlgorithms.*'
     state: "{{ 'present' if ssh_enforce_ciphers else 'absent' }}"
     owner: root
     group: root
