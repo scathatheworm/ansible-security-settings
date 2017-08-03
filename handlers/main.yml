@@ -6,7 +6,6 @@
     enabled: true
 
 - name: restart audit daemon
-  service:
-    name: auditd
-    state: restarted
-    enabled: true
+  shell: service auditd restart
+  args:
+    warn: no
