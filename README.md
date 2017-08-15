@@ -21,7 +21,7 @@ Configures:
 * Magic SysRq configuration
 
 
-#Password aging variables:
+# Password aging variables:
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
@@ -31,7 +31,7 @@ Configures:
 | `passhistory` | 6 | number of passwords to remember to avoid reusage |
 
 
-#Password complexity variables:
+# Password complexity variables:
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
@@ -44,7 +44,7 @@ Configures:
 | `solaris_dictionary_minwordlength` | 5 | Solaris minimum dictionary word length |
 
 
-#Account inactivity and failed login variables:
+# Account inactivity and failed login variables:
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
@@ -54,7 +54,7 @@ Configures:
 | `shell_timeout` | 900 | desired shell timeout in seconds, set 0 to disable |
 
 
-#System services and settings variables:
+# System services and settings variables:
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
@@ -67,7 +67,7 @@ Configures:
 | `magic_sysrq` | 1 | Value of kernel.sysrq setting in Linux, as accepted by the Linux kernel |
 
 
-#SSH configuration variables:
+# SSH configuration variables:
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
@@ -88,7 +88,7 @@ Configures:
 | `logjam_sha1_enabled` | false | Disable SHA1 KEX algorithms, vulnerable to logjam attacks |
 
 
-#Audit configuration variables:
+# Audit configuration variables:
 
 | Name           | Default Value | Description                        |
 | -------------- | ------------- | -----------------------------------|
@@ -110,3 +110,4 @@ Configures:
 | `security_audit_all_commands` | false | auditd will track ALL commands |
 | `security_audit_log_integrity` | false | auditd will monitor integrity of logs and logging configuration |
 | `security_audit_configuration_immutable` | false | auditd will make its rules immutable, a reboot will be needed to make changes |
+| `security_audit_custom_rules` | empty | This is a multi-line variable, that if defined, should contain complete audit rules that will get added to the configuration file |

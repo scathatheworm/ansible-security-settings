@@ -142,6 +142,10 @@
 -w /etc/audisp/ -p wa -k log_integrity
 {% endif %}
 
+{% if security_audit_custom_rules is defined %}
+{{ security_audit_custom_rules }}
+{% endif %}
+
 {% if security_audit_configuration_immutable %}
 # Make the auditd Configuration Immutable
 -e 2
