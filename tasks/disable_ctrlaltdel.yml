@@ -35,6 +35,7 @@
     state: present
     value: "{{ magic_sysrq }}"
     sysctl_set: true
+  notify: reload sysrq
   when:
   - ( ( ansible_distribution == 'RedHat' or ansible_distribution == 'Oracle Linux' or ansible_distribution == 'CentOS' ) and ansible_distribution_major_version|int >= 5 ) or ( ansible_distribution == 'SLES' and ansible_distribution_major_version|int == 12 )
 
@@ -46,8 +47,4 @@
   when:
   - ansible_distribution == 'SLES'
   - ansible_distribution_major_version|int == 11 or ansible_distribution_major_version|int == 10
-  register: sysrq
-
-- name: Update current sysctl for Magic SysRq if needed
-  command: "/sbin/sysctl -w kernel.sysrq={{ magic_sysrq }}"
-  when: sysrq.changed
+  notify: reload sysrq

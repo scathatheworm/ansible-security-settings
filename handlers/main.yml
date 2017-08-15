@@ -6,6 +6,9 @@
     enabled: true
 
 - name: restart audit daemon
-  shell: service auditd restart
+  shell: /sbin/service auditd restart
   args:
     warn: no
+
+- name: reload sysrq
+  command: "/sbin/sysctl -w kernel.sysrq={{ magic_sysrq }}"

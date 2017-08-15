@@ -65,3 +65,6 @@ security_audit_log_integrity: false
 security_audit_configuration_immutable: false
 auditd_max_log_filesize: 25
 auditd_num_logs: 8
+# The below variable will add whatever desired custom rules are wanted for audit
+#security_audit_custom_rules: |
+#  -w /etc/ -p wa -k config_integrity
