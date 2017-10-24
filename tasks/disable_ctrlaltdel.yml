@@ -21,10 +21,11 @@
   - ansible_virtualization_role is not defined or (ansible_virtualization_role is defined and ansible_virtualization_role != 'guest')
 
 - name: Disable Ctrl-Alt-Del reboot keybinding - systemd (EL7 and SLES12)
-  file:
-    path: /etc/systemd/system/ctrl-alt-del.target
-    state: link
-    src: /dev/null
+  systemd:
+    name: ctrl-alt-del.target
+    enabled: no
+    masked: yes
+    daemon_reload: yes
   when:
   - ansible_service_mgr == 'systemd'
   - ansible_virtualization_role is not defined or (ansible_virtualization_role is defined and ansible_virtualization_role != 'guest')
