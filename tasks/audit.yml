@@ -30,7 +30,7 @@
 - name: Configure audit rules
   template:
     src: audit.rules.j2
-    dest: /etc/audit/audit.rules
+    dest: "{{ '/etc/audit/rules.d/audit.rules' if ((ansible_distribution == 'RedHat' and ansible_distribution_major_version|int >= 6) or (ansible_distribution == 'SLES' and ansible_distribution_major_version|int <= 11)) else '/etc/audit/audit.rules' }}"
     owner: root
     group: root
     mode: 0640
